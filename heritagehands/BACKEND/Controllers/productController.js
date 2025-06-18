@@ -1,5 +1,7 @@
-const productDb = require('../Models/productModel')
-const { uploadToCloudinary } = require('../Utilities/imageUpload')  
+// Controllers/productController.js
+
+const productDb = require('../Models/productModel');
+const { uploadToCloudinary } = require('../Utilities/imageUpload');
 
 const create = async (req, res) => {
     try {
@@ -14,135 +16,107 @@ const create = async (req, res) => {
         }
 
         const cloudinaryRes = await uploadToCloudinary(req.file.path);
-        console.log(cloudinaryRes, "image uploaded to cloudinary");
 
         const newProduct = new productDb({
             title,
             description,
             category,
             price,
-            image: cloudinaryRes.secure_url // Use secure_url from cloudinary response
+            image: cloudinaryRes.secure_url
         });
 
         const savedProduct = await newProduct.save();
-        if (savedProduct) {
-            return res.status(201).json({ 
-                message: "Product created successfully",
-                product: savedProduct 
-            });
-        }
+
+        return res.status(201).json({
+            message: "Product created successfully",
+            product: savedProduct
+        });
 
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ 
-            message: error.message || "Internal server error" 
-        });
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
     }
 };
 
-
-const listProduct = async(req, res) => {
-    try{
-        const productsList = await productDb.find();
-        res.status(200).json(productsList)
-    }catch(error){
-        console.log(error);
-        res.status(500).json({ 
-            message: error.message || "Internal server error" 
-        });
+const listProduct = async (req, res) => {
+    try {
+        const productList = await productDb.find();
+        console.log(productList, "Product list retrieved");
+        res.status(200).json(productList); // Directly sending array
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
     }
+};
 
+const productDetails = async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const product = await productDb.findById(productId);
 
-}
-
-const productDetails= async(req,res)=>{
-    try{
-
-        const {productId}= req.params;
-
-        const productDetails = await productDb.findById({_id:productId});
-        if(!productDetails){
+        if (!product) {
             return res.status(404).json({ message: "Product not found" });
         }
-        return res.status(200).json(productDetails);
 
-    }catch(error){
-        console.log(error);
-        res.status(500).json({ 
-            message: error.message || "Internal server error" 
-        });
+        res.status(200).json(product);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
     }
-}
+};
 
-const updateProduct =async(req,res)=>{
-    try{
-
-        const {productId} = req.params;
+const updateProduct = async (req, res) => {
+    try {
+        const { productId } = req.params;
         const { title, description, category, price } = req.body;
+
         let imageUrl;
 
-
-
-        let isProductExist = await productDb.findById(productId);
-        if(!isProductExist){
+        const existingProduct = await productDb.findById(productId);
+        if (!existingProduct) {
             return res.status(404).json({ message: "Product not found" });
         }
-        if(req.file){
-            const cloudinaryRes =await uploadToCloudinary(req.file.path);
-            imageUrl = cloudinaryRes
+
+        if (req.file) {
+            const cloudinaryRes = await uploadToCloudinary(req.file.path);
+            imageUrl = cloudinaryRes.secure_url;
+        } else {
+            imageUrl = existingProduct.image;
         }
 
         const updatedProduct = await productDb.findByIdAndUpdate(
             productId,
-            {
-                title,
-                description,
-                category,
-                price,
-                image: imageUrl
-            },
-            { new: true },
-            res.status(400).json({message:"Product updated successfully",updateProduct})
+            { title, description, category, price, image: imageUrl },
+            { new: true }
         );
-        res.status(400).json({ message: "Product updated successfully", updatedProduct });
-        if (!updatedProduct) {
-            return res.status(400).json({ message: "Product update failed" });
-        }
+
         res.status(200).json({ message: "Product updated successfully", updatedProduct });
+
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ 
-            message: error.message || "Internal server error" 
-        });
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
     }
-}
+};
 
+const deleteProduct = async (req, res) => {
+    try {
+        const { productId } = req.params;
 
-const deleteProduct =async(req,res)=>{
-    try{
-        const {productId} = req.params;
-
-        const isProductExist = await productDb.findById(productId);
-
-        const deleteProduct = await productDb.findByIdAndDelete(productId);
-        
-        if(!deleteProduct){
-            return res.status(400).json({ message: "Product deletion failed" });
+        const existingProduct = await productDb.findById(productId);
+        if (!existingProduct) {
+            return res.status(404).json({ message: "Product not found" });
         }
-        
 
+        await productDb.findByIdAndDelete(productId);
 
-        return res.status(200).json({ message: "Product deleted successfully" });
-        
+        res.status(200).json({ message: "Product deleted successfully" });
 
-
-    }catch(error){
-        console.log(error);
-        res.status(500).json({ 
-            message: error.message || "Internal server error" 
-        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
     }
-}
+};
 
 module.exports = {
     create,

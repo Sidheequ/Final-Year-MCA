@@ -14,9 +14,9 @@ v1Router.use("/product", productRouter);
 // v1Router.use("/cart", cartRouter);
 // v1Router.use("/payment", paymentRouter);
 
-console.log("adminRouter:", adminRouter);
-console.log("userRouter:", userRouter);
-console.log("productRouter:", productRouter);
+// console.log("adminRouter:", adminRouter);
+// console.log("userRouter:", userRouter);
+// console.log("productRouter:", productRouter);
 
 
 module.exports = v1Router; 

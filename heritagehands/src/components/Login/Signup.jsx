@@ -1,20 +1,66 @@
 import React from "react";
 import "./Signup.css";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { userSignUp } from "../../services/userServices";
+import { toast } from "react-toastify";
 
 function SignUp() {
+
+
+  const [value,setVAlue] =useState({
+    name:"",
+    email:"",
+    phone:"",
+    password:"",
+    confirmpassword:""
+  })
+const onSubmit=()=>{
+  userSignUp(value).then((res)=>{
+    console.log(res)
+  }).catch((err)=>{
+    console.log(err)
+    toast("error in signup")
+  })
+  //console.log(value)
+}
+
   return (
-    <div className="login-page-container">
-      <form className="login-card">
+    <div className="login-page-container ">
+     
+     <div className="login-card">
+      {/* <form className="login-card"> */}
         <label>Name</label>
-        <input type="text" placeholder="Name" />
+        <input type="text" placeholder="Name" name='name' required onChange={(e)=>{
+          setVAlue({...value , [e.target.name]:e.target.value})
+        }}/>
+
           <label>Email</label>
-        <input type="email" placeholder="Email" />
+        <input type="email" placeholder="Email" name='email' required onChange={(e) => {
+          setVAlue({...value, [e.target.name]: e.target.value})
+        }}/>
+
+        <label>Phone</label>
+        <input type="tel" placeholder="Phone" name='phone' required onChange={(e) => {
+          setVAlue({...value, [e.target.name]: e.target.value})
+        }}/>
+
         <label>Password</label>
-        <input type="password" placeholder="Password" />
-        <button className="login-btn">Sign Up</button>
+        <input type="password" placeholder="Password" name='password' required onChange={(e)=>{
+          setVAlue({...value , [e.target.name]:e.target.value})
+        }}/>
+
+        <label>Confirm Password</label>
+        <input type="password" placeholder="Confirm Password" name='confirmpassword' required onChange={(e)=>{
+          setVAlue({...value , [e.target.name]:e.target.value})
+        }}/>
+
+        <button className="login-btn" onClick={onSubmit}>Sign Up</button>
         <div className="login-footer"> Already have an account?<Link to="/login" className="forgot-link"> Login</Link></div>
-      </form>
+      
+      {/* </form> */}
+      </div>
+     
       <div className="login-info">
         <h1>Sign Up now!</h1>
         <p>

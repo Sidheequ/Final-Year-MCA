@@ -1,17 +1,23 @@
 import React from 'react';
 import './card.css';
 
-const Card = () => {
+const Card = ({products}) => {
   return (
     <div className="product-card">
       <div className="card">
-        <img src="..." className="card-img-top" alt="..." />
+        <img src={products.image} className="card-img-top" alt={products.title} />
         <div className="card-body">
-          <h5 className="card-title">Card title</h5>
+          <h5 className="card-title">{products.title}</h5>
           <p className="card-text">
-            Some quick example text to build on the card title and make up the bulk of the card's content.
+            {products.description}
           </p>
-          <a href="#" className="btn btn-primary">Go somewhere</a>
+          <p className="card-text">
+            {products.category}
+          </p>
+          <p className="card-text">
+            ${products.price}
+          </p>
+          <button className="btn btn-primary">Go to cart</button>
         </div>
       </div>
     </div>

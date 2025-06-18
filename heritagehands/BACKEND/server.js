@@ -8,21 +8,28 @@ const path = require('path');
 
 const apiRouter = require('./Routes/index'); // This is fine
 
-const productRoutes = require('./Routes/products');
 const orderRoutes = require('./Routes/orders');
 
 const app = express();
 
+// Enhanced CORS configuration
 app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  credentials: false, // Match frontend axios setting
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
 
 app.use(express.json());
 app.use(cookieParser());
 
+// Add error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({ message: 'Internal server error', error: err.message });
+});
+
 // Routes
-app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api', apiRouter); // ✅ This will now work
 

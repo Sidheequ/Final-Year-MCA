@@ -1,4 +1,3 @@
-
 const userDb = require("../Models/userModel")
 const { createToken } = require("../Utilities/generateToken")
 const { hashPassword, comparePassword } = require("../Utilities/passwordUtilities")
@@ -6,7 +5,7 @@ const { hashPassword, comparePassword } = require("../Utilities/passwordUtilitie
 const register = async (req, res) => {
     try {
         const { name, email, phone, password, confirmpassword } = req.body
-        console.log(req.body, "req.body");
+        console.log(req.body, "user created");
 
 
         if (!name || !email || !phone || !password || !confirmpassword) {
@@ -25,7 +24,7 @@ const register = async (req, res) => {
         const hashedPassword = await hashPassword(password)
 
         const newUser = new userDb({
-            name, email, phone, password: hashedPassword
+            name, email, phone, password: hashedPassword, confirmpassword
         })
 
         const saved = await newUser.save()

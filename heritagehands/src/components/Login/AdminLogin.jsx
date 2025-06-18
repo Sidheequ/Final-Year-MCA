@@ -5,13 +5,15 @@ import "./AdminLogin.css";
 function AdminLogin() {
   return (
     <div className="login-page-container">
-      <form className="login-card">
+       <div className="login-card">
+      {/* <form className="login-card"> */}
         <label>Email</label>
         <input type="email" placeholder="Email" />
         <label>Password</label>
         <input type="password" placeholder="Password" />
         <button className="login-btn">Login</button> 
-      </form>
+      {/* </form> */}
+      </div>
       <div className="login-info">
         <h1>Login now!</h1>
         <p>
