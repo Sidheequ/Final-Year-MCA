@@ -42,11 +42,25 @@
   margin-bottom: 0.5rem;
   font-size: 1rem;
   transition: background 0.2s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
 }
 
 .sidebar-link.active,
 .sidebar-link:hover {
   background: #34495e;
+}
+
+.logout-btn {
+  color: #e74c3c;
+}
+
+.logout-btn:hover {
+  background: #c0392b !important;
+  color: #fff;
 }
 
 .user-dashboard-main {
@@ -67,6 +81,10 @@
 
 .navbar-welcome {
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
 }
 
 .navbar-actions {

@@ -42,3 +42,17 @@ export const userSignUp = (data) => {
     console.log("userSignUp called with data:", data);
     return axiosInstance.post('/user/register', data)
 }
+
+export const userLogin = (data) => {
+    console.log("userSignUp called with data:", data);
+    return axiosInstance.post('/user/login', data)
+}
+
+export const userLogout = () => {
+    return axiosInstance.post('/user/logout')
+}
+
+export const adminLogin = (data) => {
+    console.log("userSignUp called with data:", data);
+    return axiosInstance.post('/admin/login', data)
+}

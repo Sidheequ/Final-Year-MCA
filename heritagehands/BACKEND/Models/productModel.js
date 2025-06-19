@@ -20,6 +20,11 @@ const productSchema = new mongoose.Schema({
     price:{
         type:Number,
         required:true
+    },
+    vendorId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'vendors',
+        required: false // Optional for admin-created products
     }
 },{timestamps:true})
 

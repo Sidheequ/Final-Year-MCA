@@ -52,6 +52,15 @@
   color: #111827;
 }
 
+/* Welcome text styling - prevent wrapping */
+.text-black {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  font-weight: 500;
+}
+
 .nav-button {
   background-color: #111;
   color: #fff;

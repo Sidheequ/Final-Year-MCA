@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { userSignUp } from "../../services/userServices";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
 
@@ -15,12 +16,17 @@ function SignUp() {
     password:"",
     confirmpassword:""
   })
+
+  const navigate=useNavigate()
+
 const onSubmit=()=>{
   userSignUp(value).then((res)=>{
     console.log(res)
+    toast.success("Signup successfully")
+    navigate("/")
   }).catch((err)=>{
     console.log(err)
-    toast("error in signup")
+    toast.error(err.response.data.error)
   })
   //console.log(value)
 }

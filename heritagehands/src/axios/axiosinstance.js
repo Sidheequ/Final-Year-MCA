@@ -4,7 +4,7 @@ const baseURL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000/api/v1'
 
 const axiosinstance = axios.create({
   baseURL: baseURL,
-  withCredentials: false,
+  withCredentials: true,
   timeout: 10000,
 });
 

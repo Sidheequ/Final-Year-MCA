@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './ProductList.css';
-import Card from './Card';
-import { useEffect, useState } from 'react';
+//import Card from './Card';
 //import { listProducts, testAPI, testWithFetch } from '../../services/userServices';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [expandedCards, setExpandedCards] = useState({});
 
   useEffect(() => {
     console.log('ProductList component mounted');
@@ -33,8 +33,20 @@ const ProductList = () => {
       });
   }, []);
 
+  const toggleDescription = (productId) => {
+    setExpandedCards(prev => ({
+      ...prev,
+      [productId]: !prev[productId]
+    }));
+  };
+
+  const truncateText = (text, maxLength = 120) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
+
   if (loading) {
-    return <div style={{ padding: '20px', textAlign: 'center' }}>Loading products...</div>;
+    return <div className="loading">Loading products...</div>;
   }
 
   if (error) {
@@ -42,14 +54,44 @@ const ProductList = () => {
   }
 
   return (
-    <div className="product-list-wrapper grid grid-cols-1 md:grid-cols-3 gap-1">
-      <div className="product-list-container1">
+    <div className="product-page-container">
+      <div className="products-section">
+        <h2>Our Products</h2>
         {products && products.length > 0 ? (
-          products.map((product, i) => {
-            return <Card key={i} products={product} />;
-          })
+          <div className="products-grid">
+            {products.map((product, i) => {
+              const isExpanded = expandedCards[product._id || i];
+              const description = product.description || '';
+              const shouldShowReadMore = description.length > 120;
+              
+              return (
+                <div key={product._id || i} className="product-card">
+                  <img src={product.image} alt={product.title} />
+                  <div className="product-info">
+                    <h3>{product.title}</h3>
+                    <p>
+                      {isExpanded ? description : truncateText(description)}
+                      {shouldShowReadMore && (
+                        <button 
+                          className="read-more-btn"
+                          onClick={() => toggleDescription(product._id || i)}
+                        >
+                          {isExpanded ? 'Read Less' : 'Read More'}
+                        </button>
+                      )}
+                    </p>
+                    <p className="category">{product.category}</p>
+                    <p className="price">₹{product.price}</p>
+                  </div>
+                  <div className="product-actions">
+                    <button className="btn btn-small btn-primary">Add to Cart</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         ) : (
-          <div style={{ padding: '20px', textAlign: 'center' }}>No products found</div>
+          <p className="no-products">No products found</p>
         )}
       </div>
     </div>

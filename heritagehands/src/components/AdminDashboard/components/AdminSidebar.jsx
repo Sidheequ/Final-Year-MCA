@@ -6,6 +6,7 @@ const AdminSidebar = ({ activeSection, setActiveSection }) => {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: '📊' },
     { id: 'products', label: 'Products', icon: '📦' },
+    { id: 'vendors', label: 'Vendors', icon: '🏪' },
     { id: 'orders', label: 'Orders', icon: '🛍️' },
     { id: 'customers', label: 'Customers', icon: '👥' },
     { id: 'analytics', label: 'Analytics', icon: '📈' },

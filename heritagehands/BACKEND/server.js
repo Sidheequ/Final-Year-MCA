@@ -15,7 +15,7 @@ const app = express();
 // Enhanced CORS configuration
 app.use(cors({
   origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
-  credentials: false, // Match frontend axios setting
+  credentials: true, // Enable credentials for cookies
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
@@ -31,7 +31,7 @@ app.use((err, req, res, next) => {
 
 // Routes
 app.use('/api/orders', orderRoutes);
-app.use('/api', apiRouter); // ✅ This will now work
+app.use('/api', apiRouter); 
 
 const PORT = process.env.PORT || 5000;
 

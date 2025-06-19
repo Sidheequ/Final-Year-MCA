@@ -15,6 +15,7 @@ import VendorLog from './components/vendor/VendorLog';
 import AdminLogin from './components/Login/AdminLogin';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import VendorReg from './components/vendor/VendorReg';
+import VendorDashboard from './components/VendorDashboard/VendorDashboard';
 import UserDashboard from './components/Dashboard/UserDashboard';
 import ProductDetail from './components/Product/ProductDetail';
 import { CartProvider } from './context/CartContext';
@@ -37,6 +38,7 @@ function App() {
           <Route path="/admin" element={<AdminDashboard />} /> 
           <Route path="/vendorreg" element={<VendorReg />} />
           <Route path="/vendorlog" element={<VendorLog />} />
+          <Route path="/vendordashboard" element={<VendorDashboard />} />
           <Route path="/adminlogin" element={<AdminLogin />} />
           <Route path="/userdashboard" element={<UserDashboard />} />
           <Route path="/adminDashboard" element={<AdminDashboard />} />
