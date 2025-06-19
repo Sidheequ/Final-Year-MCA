@@ -38,6 +38,7 @@ export const createVendorProduct = async (productData) => {
         formData.append('description', productData.description);
         formData.append('category', productData.category);
         formData.append('price', productData.price);
+        formData.append('quantity', productData.quantity);
         formData.append('image', productData.image);
 
         const response = await axios.post('/vendor/products', formData, {
@@ -69,6 +70,7 @@ export const updateVendorProduct = async (productId, productData) => {
         formData.append('description', productData.description);
         formData.append('category', productData.category);
         formData.append('price', productData.price);
+        formData.append('quantity', productData.quantity);
         if (productData.image) {
             formData.append('image', productData.image);
         }

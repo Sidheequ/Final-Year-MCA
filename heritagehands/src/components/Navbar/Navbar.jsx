@@ -10,15 +10,17 @@ import { vendorLogout } from '../../services/vendorServices';
 import { removeUser } from '../../redux/features/userSlice';
 import { removeVendor } from '../../redux/features/vendorSlice';
 
-function Navbar() {
+const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { cartItems, clearCart } = useCart();
   
   const handleUserLogout = () => {
     try {
       userLogout().then((res) => {
         persistor.purge();
         dispatch(removeUser());
+        clearCart();
         navigate('/'); // Redirect to homepage
       });
     } catch (error) {
@@ -31,6 +33,7 @@ function Navbar() {
       vendorLogout().then((res) => {
         persistor.purge();
         dispatch(removeVendor());
+        clearCart();
         navigate('/'); // Redirect to homepage
       });
     } catch (error) {
@@ -43,61 +46,55 @@ function Navbar() {
   console.log(userData, "user data from header");
   console.log(vendorData, "vendor data from header");
   
-  const { cartItems } = useCart();
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <nav className="navbar">
-      <Link to="/" className="logo">
-        <img src={logo} alt="logo" style={{ width: "200px", height: "80px", objectFit: "contain" }} />
-      </Link>
-
-      <div className="nav-links">
-        <Link to="/" className="nav-link">Home</Link>
-        <Link to="/product" className="nav-link">Products</Link>
-        <Link to="/about" className="nav-link">About</Link>
-        <Link to="/contact" className="nav-link">Contact</Link>
-        {!vendorData && (
+      <div className="navbar-content">
+        <Link to="/" className="logo">
+          <img src={logo} alt="Heritage Hands" className="logo-image" />
+        </Link>
+        <div className="nav-links">
+          <Link to="/" className="nav-link">Home</Link>
+          <Link to="/products" className="nav-link">Products</Link>
+          <Link to="/about" className="nav-link">About</Link>
+          <Link to="/contact" className="nav-link">Contact</Link>
           <Link to="/cart" className="nav-link cart-link">
-            <span style={{ marginRight: "8px", position: "relative" }}>
-              <i className="bi bi-cart"></i>
-              {totalItems > 0 && (
-                <span className="cart-badge">{totalItems}</span>
-              )}
-            </span>
-            Cart
+            🛒 Cart
+            <span className="cart-badge">{totalItems > 0 ? totalItems : ''}</span>
           </Link>
-        )}
-        {!vendorData && (
-          <Link to="/vendorreg" className="nav-link">
-            <span style={{ marginRight: "8px" }}>
-              <i className="bi bi-shop"></i>
-            </span>
-            Become a Seller
-          </Link>
-        )}
+        </div>
+        <div>
+          {!vendorData && (
+            <Link to="/vendorreg" className="nav-button">
+              <span style={{ marginRight: "8px" }}>
+                <i className="bi bi-shop"></i>
+              </span>
+              Become a Seller
+            </Link>
+          )}
+          {vendorData && Object.keys(vendorData).length > 0 ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <span className='text-black'>Welcome {vendorData.name}</span>
+              <Link to="/vendordashboard" className='btn btn-primary btn-sm'>Dashboard</Link>
+              <button className="btn btn-secondary btn-sm" onClick={handleVendorLogout}>Logout</button>
+            </div>
+          ) : userData && Object.keys(userData).length > 0 ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <span className='text-black'>Welcome {userData.name}</span>
+              <Link to="/userdashboard" className='btn btn-primary btn-sm'>Dashboard</Link>
+              <button className="btn btn-secondary btn-sm" onClick={handleUserLogout}>Logout</button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <Link to="/login" className='btn btn-secondary'>Login</Link>
+              <Link to="/vendorlog" className='btn btn-primary'>Vendor Login</Link>
+            </div>
+          )}
+        </div>
       </div>
-
-      {vendorData && Object.keys(vendorData).length > 0 ? (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <span className='text-black'>Welcome {vendorData.name}</span>
-          <Link to="/vendordashboard" className='btn btn-primary btn-sm'>Dashboard</Link>
-          <button className="btn btn-secondary btn-sm" onClick={handleVendorLogout}>Logout</button>
-        </div>
-      ) : userData && Object.keys(userData).length > 0 ? (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <span className='text-black'>Welcome {userData.name}</span>
-          <Link to="/userdashboard" className='btn btn-primary btn-sm'>Dashboard</Link>
-          <button className="btn btn-secondary btn-sm" onClick={handleUserLogout}>Logout</button>
-        </div>
-      ) : (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <Link to="/login" className='btn btn-secondary'>Login</Link>
-          <Link to="/vendorlog" className='btn btn-primary'>Vendor Login</Link>
-        </div>
-      )}
     </nav>
   );
-}
+};
 
 export default Navbar;

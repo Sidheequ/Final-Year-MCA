@@ -6,6 +6,8 @@ import { vendorLogout, getVendorProducts, deleteVendorProduct, createVendorProdu
 import { removeVendor } from '../../redux/features/vendorSlice';
 import { toast } from 'react-toastify';
 import { persistor } from '../../redux/store';
+import axios from '../../axios/axiosinstance';
+import SalesCard from './SalesCard';
 
 function VendorDashboard() {
   const [products, setProducts] = useState([]);
@@ -17,8 +19,10 @@ function VendorDashboard() {
     description: '',
     category: '',
     price: '',
+    quantity: '',
     image: null
   });
+  const [salesReport, setSalesReport] = useState({ totalSold: 0, totalRevenue: 0, breakdown: [] });
 
   const vendorData = useSelector((state) => state.vendor.vendor);
   const navigate = useNavigate();
@@ -30,6 +34,7 @@ function VendorDashboard() {
       return;
     }
     fetchProducts();
+    fetchSalesReport();
   }, [vendorData, navigate]);
 
   const fetchProducts = async () => {
@@ -41,6 +46,15 @@ function VendorDashboard() {
       console.error('Error fetching products:', error);
       toast.error('Failed to fetch products');
       setLoading(false);
+    }
+  };
+
+  const fetchSalesReport = async () => {
+    try {
+      const response = await axios.get(`/orders/stats/vendor?vendorId=${vendorData._id}`);
+      setSalesReport(response.data);
+    } catch (error) {
+      console.error('Error fetching sales report:', error);
     }
   };
 
@@ -90,9 +104,11 @@ function VendorDashboard() {
         description: '',
         category: '',
         price: '',
+        quantity: '',
         image: null
       });
       fetchProducts();
+      fetchSalesReport();
     } catch (error) {
       console.error('Error saving product:', error);
       toast.error(error.response?.data?.message || 'Failed to save product');
@@ -105,6 +121,7 @@ function VendorDashboard() {
         await deleteVendorProduct(productId);
         toast.success('Product deleted successfully');
         fetchProducts();
+        fetchSalesReport();
       } catch (error) {
         console.error('Error deleting product:', error);
         toast.error('Failed to delete product');
@@ -119,6 +136,7 @@ function VendorDashboard() {
       description: product.description,
       category: product.category,
       price: product.price,
+      quantity: product.quantity || '',
       image: null
     });
     setShowAddForm(true);
@@ -149,6 +167,11 @@ function VendorDashboard() {
       </header>
 
       <div className="dashboard-content">
+        <div className="sales-cards-row" style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+          <SalesCard title="Total Sales" value={salesReport.totalSold} percent={salesReport.totalSold > 0 ? '100%' : '0%'} iconType="sales" />
+          <SalesCard title="Total Revenue" value={`₹${salesReport.totalRevenue}`} percent={salesReport.totalRevenue > 0 ? '100%' : '0%'} iconType="revenue" />
+        </div>
+
         <div className="stats-section">
           <div className="stat-card">
             <h3>Total Products</h3>
@@ -157,6 +180,45 @@ function VendorDashboard() {
           <div className="stat-card">
             <h3>Active Products</h3>
             <p>{products.filter(p => p.isActive !== false).length}</p>
+          </div>
+        </div>
+
+        <div className="sales-report-section">
+          <h2>Sales Report</h2>
+          <div className="sales-summary">
+            <div className="stat-card">
+              <h3>Total Products Sold</h3>
+              <p>{salesReport.totalSold}</p>
+            </div>
+            <div className="stat-card">
+              <h3>Total Revenue</h3>
+              <p>₹{salesReport.totalRevenue}</p>
+            </div>
+          </div>
+          <div className="sales-breakdown">
+            <h3>Breakdown by Product</h3>
+            {salesReport.breakdown.length === 0 ? (
+              <p>No sales yet.</p>
+            ) : (
+              <table className="sales-table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Sold</th>
+                    <th>Revenue</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {salesReport.breakdown.map((item) => (
+                    <tr key={item.productId}>
+                      <td>{item.title}</td>
+                      <td>{item.sold}</td>
+                      <td>₹{item.revenue}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
 
@@ -216,6 +278,18 @@ function VendorDashboard() {
                 </div>
 
                 <div className="form-group">
+                  <label>Quantity</label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    value={formData.quantity}
+                    onChange={handleInputChange}
+                    required
+                    min="0"
+                  />
+                </div>
+
+                <div className="form-group">
                   <label>Product Image</label>
                   <input
                     type="file"
@@ -241,6 +315,7 @@ function VendorDashboard() {
                         description: '',
                         category: '',
                         price: '',
+                        quantity: '',
                         image: null
                       });
                     }}
@@ -267,8 +342,9 @@ function VendorDashboard() {
                     <p>{product.description}</p>
                     <p className="category">{product.category}</p>
                     <p className="price">₹{product.price}</p>
+                    <p className="quantity" style={{ marginTop: '0', marginBottom: '0' }}>Quantity: {product.quantity}</p>
                   </div>
-                  <div className="product-actions">
+                  <div className="product-actions" style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', marginTop: '0' }}>
                     <button 
                       className="btn btn-small btn-primary"
                       onClick={() => handleEdit(product)}

@@ -10,6 +10,7 @@ import Signup from './components/Login/Signup';
 import Main from './components/Main/Main';
 import Cart from './components/Cart/Cart';
 import Product from './components/Product/ProductList';
+import ProductDetail from './components/Product/ProductDetail';
 import Footer from './components/Footer/Footer';
 import VendorLog from './components/vendor/VendorLog';
 import AdminLogin from './components/Login/AdminLogin';
@@ -17,13 +18,13 @@ import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import VendorReg from './components/vendor/VendorReg';
 import VendorDashboard from './components/VendorDashboard/VendorDashboard';
 import UserDashboard from './components/Dashboard/UserDashboard';
-import ProductDetail from './components/Product/ProductDetail';
+
 import { CartProvider } from './context/CartContext';
 
 function App() {
   return (
-    <CartProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <CartProvider>
         <Navbar />
         <Routes>
           <Route path="/" element={<Main />} />
@@ -44,8 +45,8 @@ function App() {
           <Route path="/adminDashboard" element={<AdminDashboard />} />
         </Routes>
         <Footer />
-      </BrowserRouter>
-    </CartProvider>
+      </CartProvider>
+    </BrowserRouter>
   );
 }
 

@@ -87,10 +87,10 @@ const logout = (req, res) => {
 // Create Product (Vendor specific)
 const createProduct = async (req, res) => {
     try {
-        const { title, description, category, price } = req.body;
+        const { title, description, category, price, quantity } = req.body;
         const vendorId = req.vendor._id; // From auth middleware
 
-        if (!title || !description || !category || !price) {
+        if (!title || !description || !category || !price || quantity === undefined) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
@@ -105,6 +105,7 @@ const createProduct = async (req, res) => {
             description,
             category,
             price,
+            quantity,
             image: cloudinaryRes.secure_url,
             vendorId: vendorId
         });
@@ -138,7 +139,7 @@ const getVendorProducts = async (req, res) => {
 const updateProduct = async (req, res) => {
     try {
         const { productId } = req.params;
-        const { title, description, category, price } = req.body;
+        const { title, description, category, price, quantity } = req.body;
         const vendorId = req.vendor._id;
 
         let imageUrl;
@@ -157,7 +158,7 @@ const updateProduct = async (req, res) => {
 
         const updatedProduct = await productDb.findByIdAndUpdate(
             productId,
-            { title, description, category, price, image: imageUrl },
+            { title, description, category, price, quantity, image: imageUrl },
             { new: true }
         );
 

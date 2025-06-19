@@ -1,7 +1,9 @@
 .cart-container {
-  max-width: 1200px;
   margin: 2rem auto;
-  padding: 0 1rem;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .cart-empty {
@@ -127,4 +129,19 @@
 
 .checkout-btn:hover {
   background: #3182ce;
+}
+
+@media (max-width: 768px) {
+  .cart-container {
+    padding: 1rem;
+  }
+  
+  .cart-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .cart-actions {
+    flex-direction: column;
+  }
 } 

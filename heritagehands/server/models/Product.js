@@ -30,6 +30,11 @@ const productSchema = new mongoose.Schema({
     enum: ['In Stock', 'Low Stock', 'Out of Stock'],
     default: 'In Stock'
   },
+  vendorId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'vendors',
+    required: false
+  },
   createdAt: {
     type: Date,
     default: Date.now

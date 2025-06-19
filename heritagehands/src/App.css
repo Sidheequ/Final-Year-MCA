@@ -1,0 +1,60 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.page-container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.section-container {
+  width: 100%;
+  padding: 2rem 0;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 1400px;
+  padding: 0 2rem;
+  margin: 0 auto;
+}
+
+/* Ensure all images maintain aspect ratio */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Common spacing for sections */
+section {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* Ensure footer stays at bottom */
+.footer {
+  margin-top: auto;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-wrapper {
+    padding: 0 0.5rem;
+  }
+}

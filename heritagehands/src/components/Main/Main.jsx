@@ -2,19 +2,15 @@ import React from 'react'
 import Product from '../Product/ProductList'
 import About from '../About/About'
 import Carousel from '../Carousel/Carousel'
-import Contact from '../Contact Us/Contact'
-
 
 const Main = () => {
   return (
-    <div>
-      <Carousel />
-      <Product />
+    <div className="section-container">
+      <div className="content-wrapper">
+        <Carousel />
+        <Product />
         <About />
-        <Contact />
-       
-       
-    
+      </div>
     </div>
   )
 }

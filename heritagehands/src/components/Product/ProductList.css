@@ -113,7 +113,9 @@
   }
   
    .product-page-container {
-    padding: 20px;
+    padding: 2rem 0;
+    max-width: 1400px;
+    margin: 0 auto;
   }
   
   .product-page-title {
@@ -126,13 +128,14 @@
   .product-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
     justify-content: center;
+    gap: 1rem;
+    padding: 0 1rem;
   }
   
 /* Product Page Container */
 .product-page-container {
-  padding: 20px;
+  padding: 2rem 0;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -146,7 +149,7 @@
 }
 
 .products-section h2 {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   color: #333;
   font-size: 2rem;
   text-align: center;
@@ -161,9 +164,11 @@
 
 /* Products Grid - Matching VendorDashboard */
 .products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0 1rem;
 }
 
 /* Product Card - Matching VendorDashboard with Uniform Height */
@@ -300,58 +305,40 @@
 
 /* Loading State */
 .loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 50vh;
-  font-size: 1.2rem;
+  text-align: center;
+  padding: 2rem;
   color: #666;
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
-  .product-page-container {
-    padding: 1rem;
-  }
-  
+@media (max-width: 1200px) {
   .products-section {
     padding: 1.5rem;
   }
-  
-  .products-grid {
-    grid-template-columns: 1fr;
+}
+
+@media (max-width: 768px) {
+  .product-page-container {
+    padding: 1rem 0;
   }
-  
+
+  .products-section {
+    padding: 1rem;
+  }
+
   .products-section h2 {
     font-size: 1.5rem;
-  }
-  
-  .product-card {
-    height: auto; /* Allow flexible height on mobile */
-    min-height: 400px;
+    margin-bottom: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
   .products-section {
-    padding: 1rem;
+    padding: 0.5rem;
   }
-  
-  .product-info {
-    padding: 0.75rem;
-  }
-  
-  .product-actions {
-    padding: 0.75rem;
-  }
-  
-  .btn-small {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
-  }
-  
-  .product-card {
-    min-height: 380px;
+
+  .products-grid {
+    padding: 0 0.5rem;
   }
 }
   

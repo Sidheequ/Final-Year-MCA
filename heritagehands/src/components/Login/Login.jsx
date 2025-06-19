@@ -32,30 +32,31 @@ function Login() {
   }
 
   return (
-    <div className="login-page-container">
-
-      <div className="login-card">
-
-        <label>Email</label>
-        <input type="email" placeholder="Email" name="email" onChange={(e) => {
-          setVAlue({ ...value, [e.target.name]: e.target.value })
-        }} />
-        <label>Password</label>
-        <input type="password" placeholder="Password" name="password" onChange={(e) => {
-          setVAlue({ ...value, [e.target.name]: e.target.value })
-        }} />
-        <button className="login-btn" onClick={OnSubmit}>Login</button>
-        <div className="login-footer"> Don't have an account?<Link to="/signup" className="forgot-link"> Sign Up</Link></div>
-        <div className="admin-footer text-center">Admin Login <Link to="/adminlogin" className="forgot-link"> Login</Link></div>
-
+    <section className="section-container">
+      <div className="content-wrapper">
+        <div className="login-page-container">
+          <div className="login-card">
+            <label>Email</label>
+            <input type="email" placeholder="Email" name="email" onChange={(e) => {
+              setVAlue({ ...value, [e.target.name]: e.target.value })
+            }} />
+            <label>Password</label>
+            <input type="password" placeholder="Password" name="password" onChange={(e) => {
+              setVAlue({ ...value, [e.target.name]: e.target.value })
+            }} />
+            <button className="login-btn" onClick={OnSubmit}>Login</button>
+            <div className="login-footer"> Don't have an account?<Link to="/signup" className="forgot-link"> Sign Up</Link></div>
+            <div className="admin-footer text-center">Admin Login <Link to="/adminlogin" className="forgot-link"> Login</Link></div>
+          </div>
+          <div className="login-info">
+            <h1>Login now!</h1>
+            <p>
+              Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.
+            </p>
+          </div>
+        </div>
       </div>
-      <div className="login-info">
-        <h1>Login now!</h1>
-        <p>
-          Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.
-        </p>
-      </div>
-    </div>
+    </section>
   );
 }
 

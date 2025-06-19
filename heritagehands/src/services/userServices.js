@@ -56,3 +56,13 @@ export const adminLogin = (data) => {
     console.log("userSignUp called with data:", data);
     return axiosInstance.post('/admin/login', data)
 }
+
+// Add product to cart (backend integration)
+export const addProductToCart = (productId, quantity = 1) => {
+    return axiosInstance.post(`/cart/addtocart/${productId}`, { quantity });
+}
+
+// Fetch current user's cart
+export const fetchUserCart = () => {
+    return axiosInstance.get('/cart/mycart');
+}

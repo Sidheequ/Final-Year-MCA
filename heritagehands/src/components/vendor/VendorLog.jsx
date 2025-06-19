@@ -38,65 +38,69 @@ function VendorLog() {
   };
 
   return (
-    <div className="vendor-log-page-container">
-      <div className="vendor-log-card">
-        <h2>Vendor Login</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+    <section className="section-container">
+      <div className="content-wrapper">
+        <div className="vendor-log-page-container">
+          <div className="vendor-log-card">
+            <h2>Vendor Login</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Password</label>
+                <input
+                  type="password"
+                  placeholder="Enter your password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="vendor-log-btn">
+                Login as Vendor
+              </button>
+            </form>
+
+            <div className="vendor-log-footer">
+              Don't have an account?{" "}
+              <Link to="/vendorreg" className="register-link">
+                Register here
+              </Link>
+            </div>
           </div>
 
-          <div className="form-group">
-            <label>Password</label>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+          <div className="vendor-log-info">
+            <h1>Welcome Back, Vendor!</h1>
+            <p>
+              Access your vendor dashboard to manage your products, track sales, and
+              grow your business with our platform.
+            </p>
+            <div className="features">
+              <h3>Manage your business:</h3>
+              <ul>
+                <li>Add new products</li>
+                <li>Update product details</li>
+                <li>Track your sales</li>
+                <li>View customer orders</li>
+                <li>Manage inventory</li>
+              </ul>
+            </div>
           </div>
-
-          <button type="submit" className="vendor-log-btn">
-            Login as Vendor
-          </button>
-        </form>
-
-        <div className="vendor-log-footer">
-          Don't have an account?{" "}
-          <Link to="/vendorreg" className="register-link">
-            Register here
-          </Link>
         </div>
       </div>
-
-      <div className="vendor-log-info">
-        <h1>Welcome Back, Vendor!</h1>
-        <p>
-          Access your vendor dashboard to manage your products, track sales, and
-          grow your business with our platform.
-        </p>
-        <div className="features">
-          <h3>Manage your business:</h3>
-          <ul>
-            <li>Add new products</li>
-            <li>Update product details</li>
-            <li>Track your sales</li>
-            <li>View customer orders</li>
-            <li>Manage inventory</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    </section>
   );
 }
 

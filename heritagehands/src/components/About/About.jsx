@@ -4,23 +4,12 @@ import logo from '../../assets/logo.png'
 
 function About() {
     return (
-        <>
-
-
-            <section className="profile-section">
-                <div className="container">
+        <section className="section-container">
+            <div className="content-wrapper">
+                <div className="profile-section">
                     <div className="info-container">
                         <div className="profile-info">
-                            <div className="avatar" style={{
-                                width: "90px",
-                                height: "90px",
-                                borderRadius: "50%",
-                                background: "#f0f0f0",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                margin: "0 auto"
-                            }}>
+                            <div className="avatar">
                                 <img
                                     src={logo}
                                     alt="logo"
@@ -63,8 +52,8 @@ function About() {
                         </div>
                     </div>
                 </div>
-            </section>
-        </>
+            </div>
+        </section>
     );
 }
 

@@ -2,10 +2,10 @@
   background-color: #ffffff;
   color: #4B5563;
   font-family: sans-serif;
-  padding: 1rem 2rem;
+  padding: 1rem 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
@@ -13,10 +13,25 @@
   width: 100%;
 }
 
+.navbar-content {
+  width: 100%;
+  max-width: 1400px;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .logo {
   display: flex;
   align-items: center;
   text-decoration: none;
+}
+
+.logo-image {
+  height: 2.5rem;
+  width: auto;
+  object-fit: contain;
 }
 
 .logo-icon {
@@ -125,5 +140,17 @@
   }
   100% {
     transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-content {
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-content {
+    padding: 0 0.5rem;
   }
 }
