@@ -8,7 +8,7 @@ const orders = [
 ];
 
 const UserOrders = () => (
-  <section className="user-orders-section">
+  <section className="user-orders-section mt-2">
     <h2>Recent Orders</h2>
     <ul className="user-orders-list">
       {orders.map(order => (

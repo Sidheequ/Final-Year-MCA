@@ -68,19 +68,57 @@ const login = async (req, res) => {
 
 const logout = (req, res) => {
     try {
-        res.clearCookie("token")
-        res.status(200).json({ message: 'Logged Out' })
+        // Clear the token cookie with proper options
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None",
+            path: "/"
+        });
+        res.status(200).json({ message: 'Logged Out Successfully' });
     } catch (error) {
-        console.log(error)
-        res.status(error.status || 500).json({ error: error.message || "Internal server error" })
+        console.log(error);
+        res.status(500).json({ error: "Internal server error during logout" });
     }
 }
 
+const updatePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.user; // From authUser middleware
 
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ error: "All fields are required." });
+        }
 
+        const user = await userDb.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found." });
+        }
+
+        const isMatch = await comparePassword(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ error: "Incorrect current password." });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ error: "Password must be at least 6 characters long." });
+        }
+
+        user.password = await hashPassword(newPassword);
+        await user.save();
+
+        res.status(200).json({ message: "Password updated successfully." });
+
+    } catch (error) {
+        console.error("Error updating password:", error);
+        res.status(500).json({ error: "Internal server error." });
+    }
+};
 
 module.exports = {
     register,
     login,
-    logout
+    logout,
+    updatePassword
 }

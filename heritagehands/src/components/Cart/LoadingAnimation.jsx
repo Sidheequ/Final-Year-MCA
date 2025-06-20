@@ -1,5 +1,5 @@
 import React from 'react';
-import './Loading.css'; // Save the CSS in this file
+import './Loading.css';
 
 const LoadingAnimation = () => {
   return (

@@ -13,7 +13,8 @@ const authUser = (req, res, next) => {
             return res.status(401).json({ error: "User not authorized" })
         }
 
-        if (verifiedToken.role !== "user") {
+        // Check if role exists and is not 'user' (allow default 'user' role)
+        if (verifiedToken.role && verifiedToken.role !== "user") {
             return res.status(401).json({ error: "Access denied" })
         }
 

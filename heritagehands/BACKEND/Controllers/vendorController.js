@@ -76,11 +76,17 @@ const login = async (req, res) => {
 // Vendor Logout
 const logout = (req, res) => {
     try {
-        res.clearCookie("vendorToken")
-        res.status(200).json({ message: 'Vendor Logged Out' })
+        // Clear the vendor token cookie with proper options
+        res.clearCookie("vendorToken", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None",
+            path: "/"
+        });
+        res.status(200).json({ message: 'Vendor Logged Out Successfully' });
     } catch (error) {
-        console.log(error)
-        res.status(error.status || 500).json({ error: error.message || "Internal server error" })
+        console.log(error);
+        res.status(500).json({ error: "Internal server error during vendor logout" });
     }
 }
 

@@ -1,9 +1,9 @@
-import axios from '../axios/axiosinstance';
+import axiosInstance from '../axios/axiosinstance';
 
 // Vendor Registration
 export const vendorRegister = async (vendorData) => {
     try {
-        const response = await axios.post('/vendor/register', vendorData);
+        const response = await axiosInstance.post('/vendor/register', vendorData);
         return response;
     } catch (error) {
         throw error;
@@ -13,7 +13,7 @@ export const vendorRegister = async (vendorData) => {
 // Vendor Login
 export const vendorLogin = async (loginData) => {
     try {
-        const response = await axios.post('/vendor/login', loginData);
+        const response = await axiosInstance.post('/vendor/login', loginData);
         return response;
     } catch (error) {
         throw error;
@@ -23,7 +23,7 @@ export const vendorLogin = async (loginData) => {
 // Vendor Logout
 export const vendorLogout = async () => {
     try {
-        const response = await axios.post('/vendor/logout');
+        const response = await axiosInstance.post('/vendor/logout');
         return response;
     } catch (error) {
         throw error;
@@ -41,7 +41,7 @@ export const createVendorProduct = async (productData) => {
         formData.append('quantity', productData.quantity);
         formData.append('image', productData.image);
 
-        const response = await axios.post('/vendor/products', formData, {
+        const response = await axiosInstance.post('/vendor/products', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -55,7 +55,7 @@ export const createVendorProduct = async (productData) => {
 // Get Vendor's Products
 export const getVendorProducts = async () => {
     try {
-        const response = await axios.get('/vendor/products');
+        const response = await axiosInstance.get('/vendor/products');
         return response;
     } catch (error) {
         throw error;
@@ -75,7 +75,7 @@ export const updateVendorProduct = async (productId, productData) => {
             formData.append('image', productData.image);
         }
 
-        const response = await axios.put(`/vendor/products/${productId}`, formData, {
+        const response = await axiosInstance.put(`/vendor/products/${productId}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -89,7 +89,7 @@ export const updateVendorProduct = async (productId, productData) => {
 // Delete Product (Vendor)
 export const deleteVendorProduct = async (productId) => {
     try {
-        const response = await axios.delete(`/vendor/products/${productId}`);
+        const response = await axiosInstance.delete(`/vendor/products/${productId}`);
         return response;
     } catch (error) {
         throw error;

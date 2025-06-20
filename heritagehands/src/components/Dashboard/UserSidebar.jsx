@@ -1,41 +1,78 @@
 import React from 'react';
-import { FaUser, FaClipboardList, FaCog, FaSignOutAlt } from 'react-icons/fa';
+import { FaUserCircle, FaBoxOpen, FaShoppingCart, FaSignOutAlt } from 'react-icons/fa';
 import './UserDashboard.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { persistor } from '../../redux/store';
 import { userLogout } from '../../services/userServices';
 import { removeUser } from '../../redux/features/userSlice';
+import { useCart } from '../../context/CartContext';
 
-const UserSidebar = () => {
+const UserSidebar = ({ user, activeView, setActiveView }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { clearCart } = useCart();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     try {
-      userLogout().then((res) => {
-        persistor.purge();
-        dispatch(removeUser());
-        navigate('/'); // Redirect to homepage
-      });
+      await userLogout();
+      persistor.purge();
+      dispatch(removeUser());
+      clearCart();
+      navigate('/');
     } catch (error) {
-      console.log(error, "error from logout");
+      console.log("Error during logout:", error);
+      // Even if logout fails, clear local state
+      persistor.purge();
+      dispatch(removeUser());
+      clearCart();
+      navigate('/');
     }
   };
+
+  const navItems = [
+    { key: 'account', icon: <FaUserCircle />, label: 'Account' },
+    { key: 'orders', icon: <FaBoxOpen />, label: 'Orders' },
+    { key: 'cart', icon: <FaShoppingCart />, label: 'Cart', path: '/cart' },
+  ];
 
   return (
     <aside className="user-sidebar">
       <div className="sidebar-header">
-        <FaUser className="sidebar-user-icon" /> <span>User Panel</span>
+        <div className="user-avatar">
+          {user?.name?.charAt(0).toUpperCase() || 'U'}
+        </div>
+        <h3 className="user-name">{user?.name || 'User'}</h3>
+        <p className="user-email">{user?.email || 'user@example.com'}</p>
       </div>
       <nav className="sidebar-nav">
-        <Link to="..." className="sidebar-link active"><FaClipboardList /> Dashboard</Link>
-        <Link to="..." className="sidebar-link"><FaClipboardList /> My Orders</Link>
-        <Link to="..." className="sidebar-link"><FaCog /> Account Settings</Link>
-        <button onClick={handleLogout} className="sidebar-link logout-btn">
-          <FaSignOutAlt /> Logout
-        </button>
+        {navItems.map((item) => {
+          if (item.path) {
+            return (
+              <Link key={item.key} to={item.path} className="sidebar-link">
+                {item.icon}
+                <span>{item.label}</span>
+              </Link>
+            );
+          }
+          return (
+            <button
+              key={item.key}
+              className={`sidebar-link ${activeView === item.key ? 'active' : ''}`}
+              onClick={() => setActiveView(item.key)}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
       </nav>
+      <div className="sidebar-footer">
+        <button onClick={handleLogout} className="sidebar-link logout-btn">
+          <FaSignOutAlt />
+          <span>Logout</span>
+        </button>
+      </div>
     </aside>
   );
 };

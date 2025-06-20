@@ -26,31 +26,32 @@ function AdminLogin() {
     })
   }
 
-
-
-
   return (
-    <div className="login-page-container">
-      <div className="login-card">
-
-        <label>Email</label>
-        <input type="email" placeholder="Email" name="email" onChange={(e) => {
-          setVAlue({ ...value, [e.target.name]: e.target.value })
-        }} />
-        <label>Password</label>
-        <input type="password" placeholder="Password" name="password" onChange={(e) => {
-          setVAlue({ ...value, [e.target.name]: e.target.value })
-        }} />
-        <button className="login-btn" onClick={OnSubmit}>Login</button>
-
+    <section className="admin-login-section vh-100">
+      <div className="container-fluid h-custom">
+        <div className="row d-flex justify-content-center align-items-center h-100">
+          <div className="col-md-9 col-lg-6 col-xl-5">
+            <div className="admin-login-image-container"></div>
+          </div>
+          <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+            <div className="admin-login-form">
+              <h2 className="admin-login-title">Admin Login</h2>
+              <label>Email</label>
+              <input type="email" placeholder="Email" name="email" className="form-control form-control-lg" onChange={(e) => {
+                setVAlue({ ...value, [e.target.name]: e.target.value })
+              }} />
+              <label>Password</label>
+              <input type="password" placeholder="Password" name="password" className="form-control form-control-lg" onChange={(e) => {
+                setVAlue({ ...value, [e.target.name]: e.target.value })
+              }} />
+              <div className="text-center text-lg-start mt-4 pt-2">
+                <button className="btn btn-primary btn-lg" onClick={OnSubmit}>Login</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="login-info">
-        <h1>Login now!</h1>
-        <p>
-          Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.
-        </p>
-      </div>
-    </div>
+    </section>
   );
 }
 

@@ -48,12 +48,26 @@ function Cart() {
               <div key={item.id} className="cart-item">
                 <img src={item.image} alt={item.title} className="cart-item-image" />
                 <div className="cart-item-details">
-                  <h3>{item.title}</h3>
+                  <h3 className="cart-item-title">{item.title}</h3>
+                  {item.category && (
+                    <p className="cart-item-category">
+                      <span className="category-label">Category:</span> {item.category}
+                    </p>
+                  )}
+                  {item.description && (
+                    <p className="cart-item-description">
+                      {item.description.length > 100 
+                        ? `${item.description.substring(0, 100)}...` 
+                        : item.description
+                      }
+                    </p>
+                  )}
                   <p className="cart-item-price">${item.price}</p>
                   <div className="quantity-controls">
                     <button 
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
                       className="quantity-btn"
+                      disabled={item.quantity <= 1}
                     >
                       -
                     </button>

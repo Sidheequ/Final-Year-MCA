@@ -32,27 +32,29 @@ function Login() {
   }
 
   return (
-    <section className="section-container">
-      <div className="content-wrapper">
-        <div className="login-page-container">
-          <div className="login-card">
-            <label>Email</label>
-            <input type="email" placeholder="Email" name="email" onChange={(e) => {
-              setVAlue({ ...value, [e.target.name]: e.target.value })
-            }} />
-            <label>Password</label>
-            <input type="password" placeholder="Password" name="password" onChange={(e) => {
-              setVAlue({ ...value, [e.target.name]: e.target.value })
-            }} />
-            <button className="login-btn" onClick={OnSubmit}>Login</button>
-            <div className="login-footer"> Don't have an account?<Link to="/signup" className="forgot-link"> Sign Up</Link></div>
-            <div className="admin-footer text-center">Admin Login <Link to="/adminlogin" className="forgot-link"> Login</Link></div>
+    <section className="login-section vh-100">
+      <div className="container-fluid h-custom">
+        <div className="row d-flex justify-content-center align-items-center h-100">
+          <div className="col-md-9 col-lg-6 col-xl-5">
+            <div className="login-image-container"></div>
           </div>
-          <div className="login-info">
-            <h1>Login now!</h1>
-            <p>
-              Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.
-            </p>
+          <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+            <div className="login-form">
+              <h2 className="login-title">Login</h2>
+              <label>Email</label>
+              <input type="email" placeholder="Email" name="email" className="form-control form-control-lg" onChange={(e) => {
+                setVAlue({ ...value, [e.target.name]: e.target.value })
+              }} />
+              <label>Password</label>
+              <input type="password" placeholder="Password" name="password" className="form-control form-control-lg" onChange={(e) => {
+                setVAlue({ ...value, [e.target.name]: e.target.value })
+              }} />
+              <div className="text-center text-lg-start mt-4 pt-2">
+                <button className="btn btn-primary btn-lg" onClick={OnSubmit}>Login</button>
+                <p className="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <Link to="/signup" className="link-danger">Sign Up</Link></p>
+                <p className="small fw-bold mt-2 pt-1 mb-0">Admin Login <Link to="/adminlogin" className="link-primary">Login</Link></p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

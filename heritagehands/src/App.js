@@ -8,7 +8,7 @@ import Contact from './components/Contact Us/Contact';
 import Login from './components/Login/Login';
 import Signup from './components/Login/Signup';
 import Main from './components/Main/Main';
-import Cart from './components/Cart/Cart';
+import CartWrapper from './components/Cart/CartWrapper';
 import Product from './components/Product/ProductList';
 import ProductDetail from './components/Product/ProductDetail';
 import Footer from './components/Footer/Footer';
@@ -30,8 +30,8 @@ function App() {
           <Route path="/" element={<Main />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/product" element={<Product />} />
+          <Route path="/cart" element={<CartWrapper />} />
+          <Route path="/products" element={<Product />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/stats" element={<StatsSection />} />
           <Route path="/login" element={<Login />} />

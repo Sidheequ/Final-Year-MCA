@@ -15,29 +15,37 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { cartItems, clearCart } = useCart();
   
-  const handleUserLogout = () => {
+  const handleUserLogout = async () => {
     try {
-      userLogout().then((res) => {
-        persistor.purge();
-        dispatch(removeUser());
-        clearCart();
-        navigate('/'); // Redirect to homepage
-      });
+      await userLogout();
+      persistor.purge();
+      dispatch(removeUser());
+      clearCart();
+      navigate('/'); // Redirect to homepage
     } catch (error) {
       console.log(error, "error from logout");
+      // Even if logout fails, clear local state
+      persistor.purge();
+      dispatch(removeUser());
+      clearCart();
+      navigate('/');
     }
   };
 
-  const handleVendorLogout = () => {
+  const handleVendorLogout = async () => {
     try {
-      vendorLogout().then((res) => {
-        persistor.purge();
-        dispatch(removeVendor());
-        clearCart();
-        navigate('/'); // Redirect to homepage
-      });
+      await vendorLogout();
+      persistor.purge();
+      dispatch(removeVendor());
+      clearCart();
+      navigate('/'); // Redirect to homepage
     } catch (error) {
       console.log(error, "error from vendor logout");
+      // Even if logout fails, clear local state
+      persistor.purge();
+      dispatch(removeVendor());
+      clearCart();
+      navigate('/');
     }
   };
 
@@ -64,7 +72,7 @@ const Navbar = () => {
             <span className="cart-badge">{totalItems > 0 ? totalItems : ''}</span>
           </Link>
         </div>
-        <div>
+        <div className="navbar-auth-section">
           {!vendorData && (
             <Link to="/vendorreg" className="nav-button">
               <span style={{ marginRight: "8px" }}>
@@ -74,21 +82,28 @@ const Navbar = () => {
             </Link>
           )}
           {vendorData && Object.keys(vendorData).length > 0 ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <span className='text-black'>Welcome {vendorData.name}</span>
-              <Link to="/vendordashboard" className='btn btn-primary btn-sm'>Dashboard</Link>
-              <button className="btn btn-secondary btn-sm" onClick={handleVendorLogout}>Logout</button>
+            <div className="user-welcome-section">
+              <div className="button-group">
+                <Link to="/vendordashboard" className='btn btn-primary btn-sm max-w-[-950px] rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 text-white'>Dashboard</Link>
+                <button className="btn btn-secondary btn-sm max-w-[-950px] rounded-2xl bg-gray-600 text-white ml-2" onClick={handleVendorLogout}>Logout</button>
+              </div>
+              <span className="welcome-text">Welcome {vendorData.name}</span>
             </div>
           ) : userData && Object.keys(userData).length > 0 ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <span className='text-black'>Welcome {userData.name}</span>
-              <Link to="/userdashboard" className='btn btn-primary btn-sm'>Dashboard</Link>
-              <button className="btn btn-secondary btn-sm" onClick={handleUserLogout}>Logout</button>
+            <div className="user-welcome-section">
+              <div className="button-group">
+                <Link to="/userdashboard" className='btn btn-primary btn-sm px-4 py-2 max-w-[-950px] rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 text-white'>Dashboard</Link>
+                <button className="btn btn-secondary btn-sm px-4 py-2 max-w-[-950px] rounded-2xl bg-gray-600 text-white ml-2" onClick={handleUserLogout}>Logout</button>
+              </div>
+              <span className="welcome-text">Welcome {userData.name}</span>
             </div>
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <Link to="/login" className='btn btn-secondary'>Login</Link>
-              <Link to="/vendorlog" className='btn btn-primary'>Vendor Login</Link>
+            <div className="guest-auth-section">
+              <div className="button-group">
+                <Link to="/login" className='btn btn-secondary btn-sm'>Login</Link>
+                <Link to="/vendorlog" className='btn btn-primary btn-sm'>Vendor Login</Link>
+              </div>
+              <span className="welcome-text">Welcome Guest</span>
             </div>
           )}
         </div>

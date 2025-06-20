@@ -1,72 +1,115 @@
+/* Main Dashboard Container */
 .user-dashboard-container {
   display: flex;
   min-height: 100vh;
-  background: #f8f9fa;
+  background-color: #f7f8fc;
+  font-family: 'Poppins', sans-serif;
 }
 
+/* Sidebar */
 .user-sidebar {
-  width: 220px;
-  background: #2c3e50;
-  color: #fff;
-  padding: 24px 0;
+  width: 260px;
+  background-color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  color: #333;
+  transition: width 0.3s ease;
 }
 
+/* Sidebar Header */
 .sidebar-header {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid #eef0f2;
+}
+
+.user-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
   display: flex;
   align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin: 0 auto 1rem;
+}
+
+.user-name {
+  margin: 0;
   font-size: 1.2rem;
   font-weight: 600;
-  margin-bottom: 2rem;
-  gap: 0.5rem;
 }
 
-.sidebar-user-icon {
-  font-size: 2rem;
+.user-email {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #888;
 }
 
+/* Sidebar Navigation */
 .sidebar-nav {
-  width: 100%;
+  flex-grow: 1;
+  padding: 1.5rem 0;
 }
 
 .sidebar-link {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  color: #fff;
+  gap: 1rem;
+  padding: 0.9rem 1.5rem;
+  color: #555;
   text-decoration: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  margin-bottom: 0.5rem;
   font-size: 1rem;
-  transition: background 0.2s;
+  font-weight: 500;
   border: none;
-  background: none;
+  background: transparent;
   width: 100%;
   text-align: left;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .sidebar-link.active,
 .sidebar-link:hover {
-  background: #34495e;
+  background-color: #f0f2ff;
+  color: #667eea;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 1.5rem;
+  border-top: 1px solid #eef0f2;
 }
 
 .logout-btn {
-  color: #e74c3c;
+  color: #e53e3e;
 }
 
 .logout-btn:hover {
-  background: #c0392b !important;
-  color: #fff;
+  background-color: #fff0f0;
+  color: #c53030;
 }
 
+/* Main Content Area */
 .user-dashboard-main {
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  padding: 2rem 3rem;
+  overflow-y: auto;
+}
+
+.content-header {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.content-subheader {
+  color: #777;
+  margin-bottom: 2rem;
 }
 
 .user-navbar {

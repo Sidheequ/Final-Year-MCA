@@ -1,68 +1,99 @@
 import axiosInstance from '../axios/axiosinstance';
 
-export const listProducts = () => {
-    console.log('Making API call to:', '/v1/product/listproducts');
-    return axiosInstance.get('/v1/product/listproducts');
+export const userSignUp = async (data) => {
+    try {
+        console.log("userSignUp called with data:", data);
+        const response = await axiosInstance.post('/user/register', data);
+        return response;
+    } catch (error) {
+        console.error('User signup error:', error);
+        throw error;
+    }
 }
 
-// Test function to verify API connection
-// export const testAPI = () => {
-//     console.log('Testing API connection...');
-//     return axiosInstance.get('/v1/product/listproducts')
-//         .then(response => {
-//             console.log('API test successful:', response.data);
-//             return response;
-//         })
-//         .catch(error => {
-//             console.error('API test failed:', error);
-//             throw error;
-//         });
-// }
-
-// Alternative test using fetch
-// export const testWithFetch = () => {
-//     console.log('Testing with fetch...');
-//     return fetch('http://localhost:5000/api/v1/product/listproducts')
-//         .then(response => {
-//             console.log('Fetch response status:', response.status);
-//             return response.json();
-//         })
-//         .then(data => {
-//             console.log('Fetch data:', data);
-//             return data;
-//         })
-//         .catch(error => {
-//             console.error('Fetch error:', error);
-//             throw error;
-//         });
-// }
-
-
-export const userSignUp = (data) => {
-    console.log("userSignUp called with data:", data);
-    return axiosInstance.post('/user/register', data)
+export const userLogin = async (data) => {
+    try {
+        console.log("userLogin called with data:", data);
+        const response = await axiosInstance.post('/user/login', data);
+        return response;
+    } catch (error) {
+        console.error('User login error:', error);
+        throw error;
+    }
 }
 
-export const userLogin = (data) => {
-    console.log("userSignUp called with data:", data);
-    return axiosInstance.post('/user/login', data)
+export const userLogout = async () => {
+    try {
+        const response = await axiosInstance.post('/user/logout');
+        return response;
+    } catch (error) {
+        console.error('User logout error:', error);
+        throw error;
+    }
 }
 
-export const userLogout = () => {
-    return axiosInstance.post('/user/logout')
-}
-
-export const adminLogin = (data) => {
-    console.log("userSignUp called with data:", data);
-    return axiosInstance.post('/admin/login', data)
+export const adminLogin = async (data) => {
+    try {
+        console.log("adminLogin called with data:", data);
+        const response = await axiosInstance.post('/admin/login', data);
+        return response;
+    } catch (error) {
+        console.error('Admin login error:', error);
+        throw error;
+    }
 }
 
 // Add product to cart (backend integration)
-export const addProductToCart = (productId, quantity = 1) => {
-    return axiosInstance.post(`/cart/addtocart/${productId}`, { quantity });
+export const addProductToCart = async (productId, quantity = 1) => {
+    try {
+        const response = await axiosInstance.post(`/cart/addtocart/${productId}`, { quantity });
+        return response;
+    } catch (error) {
+        console.error('Add to cart error:', error);
+        throw error;
+    }
 }
 
 // Fetch current user's cart
-export const fetchUserCart = () => {
-    return axiosInstance.get('/cart/mycart');
+export const fetchUserCart = async () => {
+    try {
+        const response = await axiosInstance.get('/cart/mycart');
+        return response;
+    } catch (error) {
+        console.error('Fetch cart error:', error);
+        throw error;
+    }
+}
+
+// Update user password
+export const updatePassword = async (passwordData) => {
+    try {
+        const response = await axiosInstance.patch('/user/update-password', passwordData);
+        return response;
+    } catch (error) {
+        console.error('Update password error:', error);
+        throw error;
+    }
+}
+
+// Remove product from cart
+export const removeFromCart = async (productId) => {
+    try {
+        const response = await axiosInstance.delete(`/cart/remove/${productId}`);
+        return response;
+    } catch (error) {
+        console.error('Remove from cart error:', error);
+        throw error;
+    }
+}
+
+// Update product quantity in cart
+export const updateCartItemQuantity = async (productId, quantity) => {
+    try {
+        const response = await axiosInstance.patch(`/cart/update/${productId}`, { quantity });
+        return response;
+    } catch (error) {
+        console.error('Update cart quantity error:', error);
+        throw error;
+    }
 }

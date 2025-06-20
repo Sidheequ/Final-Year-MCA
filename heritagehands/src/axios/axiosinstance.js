@@ -1,11 +1,14 @@
 import axios from 'axios';
 
-const baseURL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000/api/v1';
+const baseURL = 'http://localhost:5000/api';
 
 const axiosinstance = axios.create({
   baseURL: baseURL,
   withCredentials: true,
-  timeout: 10000,
+  timeout: 15000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // Request interceptor
@@ -31,6 +34,20 @@ axiosinstance.interceptors.response.use(
     if (error.response) {
       console.error('Error Status:', error.response.status);
       console.error('Error Data:', error.response.data);
+      
+      // Handle specific error cases
+      if (error.response.status === 401) {
+        console.error('Unauthorized - User needs to login');
+        // You can redirect to login here if needed
+      } else if (error.response.status === 404) {
+        console.error('API endpoint not found');
+      } else if (error.response.status >= 500) {
+        console.error('Server error');
+      }
+    } else if (error.request) {
+      console.error('Network error - No response received');
+    } else {
+      console.error('Error setting up request:', error.message);
     }
     return Promise.reject(error);
   }

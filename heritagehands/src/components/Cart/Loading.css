@@ -3,6 +3,16 @@
   margin: auto -50px;
   position: absolute;
   top: 50%;
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  min-width: 200px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .swing div {
@@ -10,34 +20,35 @@
   float: left;
   height: 1em;
   width: 1em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .swing div:nth-of-type(1) {
-  background: linear-gradient(to right, #385c78 0%, #325774 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .swing div:nth-of-type(2) {
-  background: linear-gradient(to right, #325774 0%, #47536a 100%);
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
 .swing div:nth-of-type(3) {
-  background: linear-gradient(to right, #4a5369 0%, #6b4d59 100%);
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
 }
 
 .swing div:nth-of-type(4) {
-  background: linear-gradient(to right, #744c55 0%, #954646 100%);
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
 }
 
 .swing div:nth-of-type(5) {
-  background: linear-gradient(to right, #9c4543 0%, #bb4034 100%);
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
 }
 
 .swing div:nth-of-type(6) {
-  background: linear-gradient(to right, #c33f31 0%, #d83b27 100%);
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
 }
 
 .swing div:nth-of-type(7) {
-  background: linear-gradient(to right, #da3b26 0%, #db412c 100%);
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
 }
 
 .shadow {
@@ -46,20 +57,23 @@
 }
 
 .shadow div {
-  filter: blur(1px);
+  filter: blur(2px);
   float: left;
   width: 1em;
   height: 0.25em;
   border-radius: 50%;
-  background: #e3dbd2;
+  background: linear-gradient(90deg, #e2e8f0 0%, #cbd5e0 100%);
+  opacity: 0.6;
 }
 
 .shadow .shadow-l {
-  background: #d5d8d6;
+  background: linear-gradient(90deg, #cbd5e0 0%, #a0aec0 100%);
+  opacity: 0.4;
 }
 
 .shadow .shadow-r {
-  background: #eed3ca;
+  background: linear-gradient(90deg, #f7fafc 0%, #e2e8f0 100%);
+  opacity: 0.5;
 }
 
 @keyframes ball-l53 {
@@ -82,22 +96,22 @@
 
 @keyframes shadow-l-n53 {
   0%, 50% {
-    opacity: 0.5;
+    opacity: 0.6;
     transform: translateX(0);
   }
   100% {
-    opacity: 0.125;
+    opacity: 0.2;
     transform: translateX(-1.75em);
   }
 }
 
 @keyframes shadow-r-n53 {
   0% {
-    opacity: 0.125;
+    opacity: 0.2;
     transform: translateX(1.75em);
   }
   50%, 100% {
-    opacity: 0.5;
+    opacity: 0.6;
     transform: translateX(0);
   }
 }

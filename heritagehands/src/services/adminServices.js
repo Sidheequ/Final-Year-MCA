@@ -1,9 +1,9 @@
-import axios from '../axios/axiosinstance';
+import axiosInstance from '../axios/axiosinstance';
 
 // Test function to check vendors without auth
 export const testGetVendors = async () => {
     try {
-        const response = await axios.get('/admin/test-vendors');
+        const response = await axiosInstance.get('/admin/test-vendors');
         return response;
     } catch (error) {
         throw error;
@@ -13,7 +13,7 @@ export const testGetVendors = async () => {
 // Get All Vendors (Admin)
 export const getAllVendors = async () => {
     try {
-        const response = await axios.get('/admin/vendors');
+        const response = await axiosInstance.get('/admin/vendors');
         return response;
     } catch (error) {
         throw error;
@@ -23,7 +23,7 @@ export const getAllVendors = async () => {
 // Approve Vendor (Admin)
 export const approveVendor = async (vendorId) => {
     try {
-        const response = await axios.put(`/admin/vendors/${vendorId}/approve`);
+        const response = await axiosInstance.put(`/admin/vendors/${vendorId}/approve`);
         return response;
     } catch (error) {
         throw error;
@@ -33,7 +33,7 @@ export const approveVendor = async (vendorId) => {
 // Reject Vendor (Admin)
 export const rejectVendor = async (vendorId) => {
     try {
-        const response = await axios.put(`/admin/vendors/${vendorId}/reject`);
+        const response = await axiosInstance.put(`/admin/vendors/${vendorId}/reject`);
         return response;
     } catch (error) {
         throw error;
@@ -43,7 +43,7 @@ export const rejectVendor = async (vendorId) => {
 // Delete Vendor (Admin)
 export const deleteVendor = async (vendorId) => {
     try {
-        const response = await axios.delete(`/admin/vendors/${vendorId}`);
+        const response = await axiosInstance.delete(`/admin/vendors/${vendorId}`);
         return response;
     } catch (error) {
         throw error;

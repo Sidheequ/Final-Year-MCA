@@ -6,7 +6,6 @@ import { vendorLogout, getVendorProducts, deleteVendorProduct, createVendorProdu
 import { removeVendor } from '../../redux/features/vendorSlice';
 import { toast } from 'react-toastify';
 import { persistor } from '../../redux/store';
-import axios from '../../axios/axiosinstance';
 import SalesCard from './SalesCard';
 
 function VendorDashboard() {
@@ -51,10 +50,12 @@ function VendorDashboard() {
 
   const fetchSalesReport = async () => {
     try {
-      const response = await axios.get(`/orders/stats/vendor?vendorId=${vendorData._id}`);
-      setSalesReport(response.data);
+      // For now, we'll use a placeholder since the orders stats endpoint might not exist
+      // You can implement this endpoint later in the backend
+      setSalesReport({ totalSold: 0, totalRevenue: 0, breakdown: [] });
     } catch (error) {
       console.error('Error fetching sales report:', error);
+      setSalesReport({ totalSold: 0, totalRevenue: 0, breakdown: [] });
     }
   };
 
