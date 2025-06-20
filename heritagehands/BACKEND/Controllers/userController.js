@@ -57,8 +57,8 @@ const login = async (req, res) => {
             return res.status(400).json({ error: "Passwords does not match" })
         }
         const token = createToken(userExist._id)
-        res.cookie("token", token,{sameSite:"None", secure:true});
-        return res.status(200).json({ message: "user login successfull", userExist })
+        // res.cookie("token", token,{sameSite:"None", secure:true});
+        return res.status(200).json({ message: "user login successfull", userExist, token })
 
     } catch (error) {
         console.log(error)
@@ -116,9 +116,52 @@ const updatePassword = async (req, res) => {
     }
 };
 
+const updateUserAddress = async (req, res) => {
+    try {
+        const userId = req.user;
+        const { address, city, state, postalCode } = req.body;
+
+        if (!address || !city || !state || !postalCode) {
+            return res.status(400).json({ error: 'All address fields are required.' });
+        }
+
+        const updatedUser = await userDb.findByIdAndUpdate(
+            userId,
+            { $set: { shippingAddress: { address, city, state, postalCode } } },
+            { new: true, runValidators: true }
+        ).select('-password');
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+
+        res.status(200).json({ message: 'Address updated successfully.', user: updatedUser });
+
+    } catch (error) {
+        console.error('Error updating address:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const getUserProfile = async (req, res) => {
+    try {
+        const userId = req.user;
+        const user = await userDb.findById(userId).select('-password -confirmpassword');
+        if (!user) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 module.exports = {
     register,
     login,
     logout,
-    updatePassword
+    updatePassword,
+    updateUserAddress,
+    getUserProfile,
 }

@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { useCart } from '../../context/CartContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import './Cart.css';
+import LoadingAnimation from './LoadingAnimation';
 
 function Cart() {
   const { cartItems, removeFromCart, updateQuantity, getTotalPrice, clearCart, fetchCart } = useCart();
@@ -17,22 +18,19 @@ function Cart() {
   }, [userData]);
 
   const handleCheckout = () => {
-    // Here you would typically integrate with a payment processor
-    alert('Proceeding to checkout...');
-    clearCart();
-    navigate('/');
+    navigate('/checkout');
   };
 
   if (cartItems.length === 0) {
     return (
       <section className="section-container">
-        <div className="content-wrapper">
-          <div className="cart-empty">
-            <h2>Your cart is empty</h2>
-            <button onClick={() => navigate('/product')} className="continue-shopping">
-              Continue Shopping
-            </button>
-          </div>
+        <div className="cart-empty-container">
+          <LoadingAnimation />
+          <h2 className="cart-empty-title">Your cart is empty</h2>
+          <p className="cart-empty-message">Looks like you haven't added anything to your cart yet.</p>
+          <Link to="/" className="continue-shopping-link">
+            Continue Shopping
+          </Link>
         </div>
       </section>
     );
@@ -95,7 +93,7 @@ function Cart() {
               <span>${getTotalPrice().toFixed(2)}</span>
             </div>
             <div className="cart-actions">
-              <button onClick={() => navigate('/product')} className="continue-shopping">
+              <button onClick={() => navigate('/')} className="continue-shopping-link">
                 Continue Shopping
               </button>
               <button onClick={handleCheckout} className="checkout-btn">

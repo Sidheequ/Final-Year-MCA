@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaUserCircle, FaBoxOpen, FaShoppingCart, FaSignOutAlt } from 'react-icons/fa';
+import { FaUserCircle, FaBoxOpen, FaShoppingCart, FaSignOutAlt, FaShippingFast, FaTachometerAlt, FaCog } from 'react-icons/fa';
 import './UserDashboard.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -31,8 +31,11 @@ const UserSidebar = ({ user, activeView, setActiveView }) => {
   };
 
   const navItems = [
-    { key: 'account', icon: <FaUserCircle />, label: 'Account' },
+    { key: 'dashboard', icon: <FaTachometerAlt />, label: 'Dashboard' },
+    { key: 'profile', icon: <FaUserCircle />, label: 'Profile' },
     { key: 'orders', icon: <FaBoxOpen />, label: 'Orders' },
+    { key: 'address', icon: <FaShippingFast />, label: 'Address' },
+    { key: 'settings', icon: <FaCog />, label: 'Settings' },
     { key: 'cart', icon: <FaShoppingCart />, label: 'Cart', path: '/cart' },
   ];
 

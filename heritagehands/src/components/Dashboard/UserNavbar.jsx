@@ -1,17 +1,25 @@
 import React from 'react';
-import { FaBell, FaCog } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
+import { FaBell, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import './UserDashboard.css';
 
-const UserNavbar = () => {
-  const userData = useSelector((state) => state.user.user);
-  
+const UserNavbar = ({ user, onLogout }) => {
   return (
     <header className="user-navbar">
-      <div className="navbar-welcome">Welcome, {userData?.name || 'User'}!</div>
+      <div className="navbar-welcome">
+        <h2>Welcome, {user?.name || 'User'}!</h2>
+        <p>Manage your account and track your orders</p>
+      </div>
       <div className="navbar-actions">
-        <FaBell className="navbar-icon" />
-        <FaCog className="navbar-icon" />
+        <button className="navbar-icon-btn">
+          <FaBell className="navbar-icon" />
+        </button>
+        <button className="navbar-icon-btn">
+          <FaCog className="navbar-icon" />
+        </button>
+        <button className="logout-btn" onClick={onLogout}>
+          <FaSignOutAlt />
+          <span>Logout</span>
+        </button>
       </div>
     </header>
   );

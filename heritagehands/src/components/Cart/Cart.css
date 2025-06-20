@@ -144,31 +144,41 @@
   justify-content: flex-end;
 }
 
-.continue-shopping,
-.checkout-btn {
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.continue-shopping {
-  background: white;
-  border: 1px solid #e2e8f0;
-}
-
-.continue-shopping:hover {
-  background: #f7fafc;
-}
-
-.checkout-btn {
-  background: #4299e1;
+.continue-shopping-link, .checkout-btn {
+  display: inline-block;
   color: white;
+  padding: 0.8rem 2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
   border: none;
+  cursor: pointer;
+}
+
+.continue-shopping-link {
+  background-color: #2548c4;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  box-shadow: 0 4px 14px 0 rgba(108, 117, 125, 0.39);
+}
+
+.continue-shopping-link:hover {
+  background-color: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px 0 rgba(108, 117, 125, 0.23);
+}
+
+.checkout-btn {
+  background-color: #2a52e0;
+  box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.39);
 }
 
 .checkout-btn:hover {
-  background: #3182ce;
+  background-color: #2548c4;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px 0 rgba(0, 118, 255, 0.23);
 }
 
 @media (max-width: 768px) {

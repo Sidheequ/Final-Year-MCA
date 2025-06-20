@@ -1,12 +1,30 @@
 import React from 'react';
 import './UserDashboard.css';
 
-const UserProfile = () => (
+const UserProfile = ({ user }) => (
   <section className="user-profile-section">
-    <h2>Profile Information</h2>
-    <p><strong>Name:</strong> John Doe</p>
-    <p><strong>Email:</strong> john@example.com</p>
-    <p><strong>Address:</strong> 123 Street, City, Country</p>
+    <div className="profile-info-grid">
+        <div className="info-item">
+            <span className="info-label">Name</span>
+            <span className="info-value">{user?.name || 'N/A'}</span>
+        </div>
+        <div className="info-item">
+            <span className="info-label">Email</span>
+            <span className="info-value">{user?.email || 'N/A'}</span>
+        </div>
+        <div className="info-item">
+            <span className="info-label">Phone</span>
+            <span className="info-value">{user?.phone || 'N/A'}</span>
+        </div>
+        <div className="info-item">
+            <span className="info-label">Shipping Address</span>
+            <span className="info-value">
+                {user?.shippingAddress?.address ? 
+                    `${user.shippingAddress.address}, ${user.shippingAddress.city}, ${user.shippingAddress.state} - ${user.shippingAddress.postalCode}` 
+                    : 'No address set'}
+            </span>
+        </div>
+    </div>
   </section>
 );
 

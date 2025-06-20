@@ -1,25 +1,19 @@
 .navbar {
-  background-color: #ffffff;
-  color: #4B5563;
-  font-family: sans-serif;
-  padding: 1rem 0;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  width: 100%;
+  padding: 0 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: 70px;
 }
 
 .navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   max-width: 1400px;
-  padding: 0 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .logo {
@@ -29,9 +23,7 @@
 }
 
 .logo-image {
-  height: 2.5rem;
-  width: auto;
-  object-fit: contain;
+  height: 40px;
 }
 
 .logo-icon {
@@ -45,198 +37,152 @@
 }
 
 .nav-links {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: center !important;
-  flex: 1 1 0%;
+  display: flex;
   gap: 2rem;
-  margin: 0;
+  flex-grow: 1;
+  margin-left: 3rem;
 }
 
 .nav-link {
-  text-decoration: none;
-  color: #4B5563;
-  transition: color 0.2s;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-}
-
-.nav-link:hover {
-  color: #111827;
-}
-
-/* Button group for stacking buttons horizontally */
-.button-group {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  margin-bottom: 0.25rem;
-}
-
-/* User welcome section - column layout */
-.user-welcome-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-/* Guest auth section - column layout */
-.guest-auth-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-/* Welcome text styling */
-.welcome-text {
-  font-size: 0.9rem;
   color: #333;
+  text-decoration: none;
   font-weight: 500;
-  text-align: center;
-  white-space: nowrap;
 }
 
-/* Navbar auth section */
-.navbar-auth-section {
+.navbar-actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-}
-
-/* Legacy class for backward compatibility */
-.text-black {
-  white-space: nowrap;
-  overflow: visible;
-  text-overflow: clip;
-  font-weight: 500;
-  color: #333;
-  margin-right: 0.5rem;
-}
-
-/* Button styles for navbar */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 400;
-  text-align: center;
-  user-select: none;
-  border: none;
-  padding: 0.375rem 0.75rem;
-  font-size: 1rem;
-  line-height: 1.5;
-  border-radius: 0.375rem;
-  transition: all 0.15s ease-in-out;
-  text-decoration: none;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.btn-primary {
-  background: #6366f1;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #4f46e5;
-  opacity: 0.95;
-}
-
-.btn-secondary {
-  background: #6B7280;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background: #4B5563;
-  opacity: 0.95;
-}
-
-.btn-sm {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
+  gap: 1.5rem;
 }
 
 .nav-button {
-  background-color: #111;
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1.5rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  font-weight: 600;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
   font-size: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-  white-space: nowrap;
+  font-weight: 500;
+  color: #333;
+  text-decoration: none;
 }
 
-.nav-button:hover {
-  background: #333;
-  transform: scale(1.05);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+.login-button {
+  background-color: transparent;
+  color: #333;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  gap: 0.8rem;
 }
 
-.nav-button svg {
-  width: 1rem;
-  height: 1rem;
-  margin-left: 0.5rem;
+.login-button:hover {
+  background-color: #f5f5f5;
 }
 
-.i {
-  padding: 0 6px;
-  margin-right: 20px;
+.user-button {
+  background: none;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+.user-button:hover {
+  background: none;
+  border: none;
+  box-shadow: none;
+  transform: none;
 }
 
 .cart-link {
-  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .cart-badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: #e53e3e;
+  background-color: red;
   color: white;
   border-radius: 50%;
   padding: 2px 6px;
-  font-size: 12px;
-  font-weight: bold;
-  min-width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: badge-pop 0.3s ease-out;
+  font-size: 0.7rem;
+  margin-left: -5px;
 }
 
-@keyframes badge-pop {
-  0% {
-    transform: scale(0);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
+/* Dropdown Menu */
+.dropdown-container {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  width: 200px;
+  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #333;
+  text-decoration: none;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+.new-customer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.signup-link {
+  color: #2a52e0;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #eee;
+  margin: 0.5rem 0;
+}
+
+.logout-button {
+  border-top: 1px solid #eee;
+}
+
+.dropdown-arrow {
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  transition: transform 0.2s;
+}
+
+.dropdown-container:hover .dropdown-arrow {
+  transform: rotate(180deg);
 }
 
 @media (max-width: 768px) {
   .navbar-content {
     padding: 0 1rem;
-  }
-  
-  .btn-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
   }
   
   .welcome-text {
@@ -257,11 +203,6 @@
 @media (max-width: 480px) {
   .navbar-content {
     padding: 0 0.5rem;
-  }
-  
-  .btn-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
   }
   
   .welcome-text {

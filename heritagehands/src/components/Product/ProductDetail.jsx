@@ -13,12 +13,14 @@ function ProductDetail() {
   const [error, setError] = useState(null);
   const { addToCart } = useCart();
   const navigate = useNavigate();
+  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await getProductById(id);
         setProduct(response.data);
+        setTotalPrice(response.data.price);
       } catch (error) {
         setError('Error fetching product details');
         console.error('Fetch error:', error);
@@ -29,13 +31,19 @@ function ProductDetail() {
     fetchProduct();
   }, [id]);
 
+  useEffect(() => {
+    if (product) {
+      setTotalPrice(product.price * quantity);
+    }
+  }, [quantity, product]);
+
   const handleAddToCart = () => {
     addToCart(product, quantity);
   };
 
   const handleCheckout = () => {
     addToCart(product, quantity);
-    navigate('/cart');
+    navigate('/checkout');
   };
 
   if (loading) return <div className="loading-full-page">Loading...</div>;
@@ -53,7 +61,7 @@ function ProductDetail() {
           <p className="product-category-detail">{product.category}</p>
           <p className="product-description-detail">{product.description}</p>
           <div className="price-container-detail">
-            <span className="product-price-detail">₹{product.price}</span>
+            <span className="product-price-detail">₹{totalPrice.toFixed(2)}</span>
           </div>
           <div className="quantity-selector-detail">
             <button className="btn-quantity" onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>

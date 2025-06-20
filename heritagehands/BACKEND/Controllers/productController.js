@@ -41,8 +41,7 @@ const create = async (req, res) => {
 const listProduct = async (req, res) => {
     try {
         const productList = await productDb.find();
-        console.log(productList, "Product list retrieved");
-        res.status(200).json(productList); // Directly sending array
+        res.status(200).json({message: "Product list retrieved", productList}); // Directly sending array
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal server error" });

@@ -143,7 +143,7 @@
 /* Products Section - Matching VendorDashboard */
 .products-section {
   background: white;
-  padding: 2rem;
+  padding: 0 2rem 2rem 2rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -180,7 +180,7 @@
   background: #ffffff;
   display: flex;
   flex-direction: column;
-  height: 450px; /* Fixed uniform height */
+  height: 300px; /* Fixed uniform height */
 }
 
 .product-card:hover {

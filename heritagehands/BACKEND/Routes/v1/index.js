@@ -5,6 +5,7 @@ const userRouter = require('./userRoutes');
 const productRouter = require('./productRoutes');
 const vendorRouter = require('./vendorRoutes');
 const cartRouter = require('./cartRoutes');
+const orderRouter = require('./orderRoutes');
 // const paymentRouter = require('./paymentRoutes');
 
 const v1Router = express.Router();
@@ -14,6 +15,7 @@ v1Router.use("/admin", adminRouter);
 v1Router.use("/product", productRouter);
 v1Router.use("/vendor", vendorRouter);
 v1Router.use("/cart", cartRouter);
+v1Router.use("/order", orderRouter);
 // v1Router.use("/payment", paymentRouter);
 
 // console.log("adminRouter:", adminRouter);

@@ -1,34 +1,23 @@
 import React from 'react';
 import './Loading.css';
 
-const LoadingAnimation = () => {
+function LoadingAnimation() {
   return (
-    <div
-      aria-busy="true"
-      aria-label="Loading"
-      role="progressbar"
-      className="container"
-    >
-      <div className="swing">
-        <div className="swing-l"></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div className="swing-r"></div>
-      </div>
-      <div className="shadow">
-        <div className="shadow-l"></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div className="shadow-r"></div>
+    <div className="loading">
+      <div className="loading-wide">
+        <div className="l1 color"></div>
+        <div className="l2 color"></div>
+        <div className="e1 color animation-effect-light"></div>
+        <div className="e2 color animation-effect-light-d"></div>
+        <div className="e3 animation-effect-rot">X</div>
+        <div className="e4 color animation-effect-light"></div>
+        <div className="e5 color animation-effect-light-d"></div>
+        <div className="e6 animation-effect-scale">*</div>
+        <div className="e7 color"></div>
+        <div className="e8 color"></div>
       </div>
     </div>
   );
-};
+}
 
-export default LoadingAnimation; 
+export default LoadingAnimation;

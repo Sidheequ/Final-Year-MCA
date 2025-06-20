@@ -18,6 +18,8 @@ import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import VendorReg from './components/vendor/VendorReg';
 import VendorDashboard from './components/VendorDashboard/VendorDashboard';
 import UserDashboard from './components/Dashboard/UserDashboard';
+import Checkout from './components/Checkout/Checkout';
+import OrdersPage from './components/Order/OrdersPage';
 
 import { CartProvider } from './context/CartContext';
 
@@ -43,6 +45,8 @@ function App() {
           <Route path="/adminlogin" element={<AdminLogin />} />
           <Route path="/userdashboard" element={<UserDashboard />} />
           <Route path="/adminDashboard" element={<AdminDashboard />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orders" element={<OrdersPage />} />
         </Routes>
         <Footer />
       </CartProvider>

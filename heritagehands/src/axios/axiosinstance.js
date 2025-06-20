@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:5000/api';
+const baseURL = process.env.REACT_APP_BASE_URL;
 
 const axiosinstance = axios.create({
   baseURL: baseURL,
@@ -14,7 +14,12 @@ const axiosinstance = axios.create({
 // Request interceptor
 axiosinstance.interceptors.request.use(
   (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
     console.log('Request:', config.method?.toUpperCase(), config.url);
+    console.log('With Credentials:', config.withCredentials);
     return config;
   },
   (error) => {

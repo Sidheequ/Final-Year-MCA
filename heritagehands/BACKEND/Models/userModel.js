@@ -21,6 +21,12 @@ const userSchema = new mongoose.Schema({
     confirmpassword:{
         type:String,
         required:true
+    },
+    shippingAddress: {
+        address: { type: String },
+        city: { type: String },
+        state: { type: String },
+        postalCode: { type: String },
     }
 },{timestamps:true})
 

@@ -43,6 +43,16 @@ export const adminLogin = async (data) => {
     }
 }
 
+export const adminLogout = async () => {
+    try {
+        const response = await axiosInstance.post('/admin/logout');
+        return response;
+    } catch (error) {
+        console.error('Admin logout error:', error);
+        throw error;
+    }
+}
+
 // Add product to cart (backend integration)
 export const addProductToCart = async (productId, quantity = 1) => {
     try {
@@ -97,3 +107,47 @@ export const updateCartItemQuantity = async (productId, quantity) => {
         throw error;
     }
 }
+
+// Get user profile data
+export const getUserProfile = async () => {
+    try {
+        const response = await axiosInstance.get('/user/profile');
+        return response;
+    } catch (error) {
+        console.error('Get user profile error:', error);
+        throw error;
+    }
+};
+
+// Get user order statistics
+export const getOrderStats = async () => {
+    try {
+        const response = await axiosInstance.get('/order/stats');
+        return response;
+    } catch (error) {
+        console.error('Get order stats error:', error);
+        throw error;
+    }
+};
+
+// Get all orders for a user
+export const getUserOrders = async () => {
+    try {
+        const response = await axiosInstance.get('/order');
+        return response;
+    } catch (error) {
+        console.error('Get user orders error:', error);
+        throw error;
+    }
+};
+
+// Update user's shipping address
+export const updateUserAddress = async (addressData) => {
+    try {
+        const response = await axiosInstance.patch('/user/address', addressData);
+        return response;
+    } catch (error) {
+        console.error('Update user address error:', error);
+        throw error;
+    }
+};
