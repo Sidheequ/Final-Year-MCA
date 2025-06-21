@@ -39,7 +39,7 @@ const onSubmit=()=>{
           </div>
           <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
             <div className="signup-form">
-              <h2 className="signup-title">Create an Account</h2>
+              <h5 className="signup-title">Create an Account</h5>
               
               <label>Name</label>
               <input type="text" placeholder="Name" name='name' className="form-control form-control-lg" required onChange={(e)=>{

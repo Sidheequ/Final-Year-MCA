@@ -10,8 +10,8 @@ function HeroSection() {
       <div className="hero-section">
         <div className="hero-content">
           <div className="hero-text">
-            <h1>Summer styles are finally here</h1>
-            <p>This year, our new summer collection will shelter you from the harsh elements of a world that doesn't care if you live or die.</p>
+            <h1>Celebrate Craftsmanship, Shop Handcrafted Treasures</h1>
+            <p>Discover unique, artisan-made products crafted with passion, tradition, and care—bringing timeless beauty to your everyday life.</p>
             <a href="#" className="shop-button">Shop Collection</a>
           </div>
           <div className="hero-images">

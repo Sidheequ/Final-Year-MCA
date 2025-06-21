@@ -39,7 +39,7 @@ const styles = {
     backgroundColor: '#1f2937',
     color: '#f9fafb',
     width: '100%',
-    marginTop: 'auto',
+    marginTop: '50px',
   },
   content: {
     width: '100%',

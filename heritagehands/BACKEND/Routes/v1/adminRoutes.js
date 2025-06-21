@@ -1,4 +1,17 @@
-const { register, login, logout, getAllVendors, approveVendor, rejectVendor, deleteVendor } = require('../../Controllers/adminController')
+const { 
+    register, 
+    login, 
+    logout, 
+    getAllVendors, 
+    approveVendor, 
+    rejectVendor, 
+    deleteVendor,
+    getDashboardStats,
+    getAllProducts,
+    getAllCustomers,
+    getAllOrders,
+    getSalesAnalytics
+} = require('../../Controllers/adminController')
 const authAdmin = require('../../middleware/authAdmin')
 
 const adminRouter = require('express').Router()
@@ -20,6 +33,21 @@ adminRouter.get("/test-vendors", async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+// Dashboard Statistics (Protected)
+adminRouter.get("/dashboard-stats", authAdmin, getDashboardStats)
+
+// Product Management Routes (Protected)
+adminRouter.get("/products", authAdmin, getAllProducts)
+
+// Customer Management Routes (Protected)
+adminRouter.get("/customers", authAdmin, getAllCustomers)
+
+// Order Management Routes (Protected)
+adminRouter.get("/orders", authAdmin, getAllOrders)
+
+// Analytics Routes (Protected)
+adminRouter.get("/analytics", authAdmin, getSalesAnalytics)
 
 // Vendor Management Routes (Protected)
 adminRouter.get("/vendors", authAdmin, getAllVendors)

@@ -9,4 +9,24 @@ export const createOrder = async (orderData) => {
         console.error('Create order error:', error);
         throw error;
     }
+};
+
+// Get order details
+export const getOrderDetails = async (orderId) => {
+    try {
+        const response = await axiosInstance.get(`/orders/${orderId}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
+};
+
+// Cancel order
+export const cancelOrder = async (orderId) => {
+    try {
+        const response = await axiosInstance.put(`/orders/${orderId}/cancel`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
 }; 

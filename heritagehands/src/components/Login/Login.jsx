@@ -74,8 +74,8 @@ function Login() {
                 />
               </div>
 
-              <button type="submit" className="user-log-btn">
-                Login as User
+              <button type="submit" className="user-log-btn btn btn-primary">
+                Login
               </button>
             </form>
 
@@ -83,6 +83,9 @@ function Login() {
               Don't have an account?{" "}
               <Link to="/signup" className="register-link">
                 Register here
+              </Link>
+              <p>Admin Login</p>
+              <Link to="/adminlogin" className="register-link "> Admin Login
               </Link>
             </div>
           </div>

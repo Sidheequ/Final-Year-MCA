@@ -1,5 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const { 
+    createOrder, 
+    getOrderStats, 
+    getUserOrders, 
+    getOrderDetails, 
+    cancelOrder 
+} = require('../Controllers/orderController');
+const authUser = require('../middleware/authUser');
 
 // Get all orders
 router.get('/', async (req, res) => {
@@ -20,13 +28,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create order
-router.post('/', async (req, res) => {
-    try {
-        res.status(201).json({ message: "Create order route" });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+router.post('/', authUser, createOrder);
 
 // Update order
 router.put('/:id', async (req, res) => {
@@ -45,5 +47,11 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+// Order routes (Protected - User authentication required)
+router.get('/stats', authUser, getOrderStats);
+router.get('/user-orders', authUser, getUserOrders);
+router.get('/:orderId', authUser, getOrderDetails);
+router.put('/:orderId/cancel', authUser, cancelOrder);
 
 module.exports = router; 

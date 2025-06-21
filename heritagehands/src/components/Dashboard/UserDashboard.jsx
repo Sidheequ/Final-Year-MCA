@@ -53,7 +53,7 @@ const UserDashboard = () => {
     };
 
     fetchData();
-  }, [dispatch, navigate, user]);
+  }, [dispatch, navigate]);
 
   const handleLogout = async () => {
     try {

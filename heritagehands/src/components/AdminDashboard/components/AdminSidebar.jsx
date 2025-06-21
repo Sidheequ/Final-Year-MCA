@@ -1,40 +1,61 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import './AdminSidebar.css';
+import { 
+  FaTachometerAlt, 
+  FaBox, 
+  FaStore, 
+  FaUsers, 
+  FaChartBar, 
+  FaComments,
+  FaUser,
+  FaCog,
+  FaBars
+} from 'react-icons/fa';
 
-const AdminSidebar = ({ activeSection, setActiveSection }) => {
-  const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-    { id: 'products', label: 'Products', icon: '📦' },
-    { id: 'vendors', label: 'Vendors', icon: '🏪' },
-    { id: 'orders', label: 'Orders', icon: '🛍️' },
-    { id: 'customers', label: 'Customers', icon: '👥' },
-    { id: 'analytics', label: 'Analytics', icon: '📈' },
-    { id: 'settings', label: 'Settings', icon: '⚙️' },
+const AdminSidebar = ({ activeSection, setActiveSection, collapsed, setCollapsed }) => {
+  const navItems = [
+    { key: 'dashboard', icon: <FaTachometerAlt />, label: 'Dashboard' },
+    { key: 'products', icon: <FaBox />, label: 'Product Management' },
+    { key: 'vendors', icon: <FaStore />, label: 'Vendor Management' },
+    { key: 'customers', icon: <FaUsers />, label: 'Customer Management' },
+    { key: 'sales', icon: <FaChartBar />, label: 'Sales Report' },
+    { key: 'feedback', icon: <FaComments />, label: 'Customer Feedback' },
+    { key: 'profile', icon: <FaUser />, label: 'Profile' },
   ];
 
   return (
-    <div className="admin-sidebar">
+    <div className={`admin-sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
-        <h2>Admin Panel</h2>
+        <div className="sidebar-toggle" onClick={() => setCollapsed(!collapsed)}>
+          <FaBars />
+        </div>
+        {!collapsed && (
+          <div className="sidebar-brand">
+            <h3>Admin Panel</h3>
+          </div>
+        )}
       </div>
+
       <nav className="sidebar-nav">
-        {menuItems.map((item) => (
+        {navItems.map((item) => (
           <button
-            key={item.id}
-            className={`nav-item ${activeSection === item.id ? 'active' : ''}`}
-            onClick={() => setActiveSection(item.id)}
+            key={item.key}
+            className={`sidebar-link ${activeSection === item.key ? 'active' : ''}`}
+            onClick={() => setActiveSection(item.key)}
+            title={collapsed ? item.label : ''}
           >
-            <span className="nav-icon">{item.icon}</span>
-            <span className="nav-label">{item.label}</span>
+            <span className="sidebar-icon">{item.icon}</span>
+            {!collapsed && <span className="sidebar-label">{item.label}</span>}
           </button>
         ))}
       </nav>
+
       <div className="sidebar-footer">
-        <Link to="/" className="nav-item">
-          <span className="nav-icon">🏠</span>
-          <span className="nav-label">Back to Site</span>
-        </Link>
+        {!collapsed && (
+          <div className="sidebar-info">
+            <p>Heritage Hands</p>
+            <small>Admin Dashboard</small>
+          </div>
+        )}
       </div>
     </div>
   );

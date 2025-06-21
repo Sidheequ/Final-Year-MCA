@@ -94,4 +94,64 @@ export const deleteVendorProduct = async (productId) => {
     } catch (error) {
         throw error;
     }
+};
+
+// Vendor Notification Services
+export const getVendorNotifications = async (params = {}) => {
+    try {
+        const response = await axiosInstance.get('/vendor/notifications', { params });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
+};
+
+export const markNotificationAsRead = async (notificationId) => {
+    try {
+        const response = await axiosInstance.put(`/vendor/notifications/${notificationId}/read`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
+};
+
+// Vendor Sales Report Services
+export const getVendorSalesReport = async (params = {}) => {
+    try {
+        const response = await axiosInstance.get('/vendor/sales-report', { params });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
+};
+
+export const exportSalesReport = async (params = {}) => {
+    try {
+        const response = await axiosInstance.get('/vendor/sales-report/export', { 
+            params,
+            responseType: 'blob'
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
+};
+
+// Vendor Dashboard Services
+export const getVendorDashboardStats = async () => {
+    try {
+        const response = await axiosInstance.get('/vendor/dashboard-stats');
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
+};
+
+export const updateNotificationPreferences = async (preferences) => {
+    try {
+        const response = await axiosInstance.put('/vendor/notification-preferences', preferences);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
 }; 

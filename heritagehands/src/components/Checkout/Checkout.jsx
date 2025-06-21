@@ -26,6 +26,13 @@ function Checkout() {
         postalCode: ''
     });
 
+    // Add card details state
+    const [cardDetails, setCardDetails] = useState({
+        cardNumber: '',
+        expiryDate: '',
+        cvc: ''
+    });
+
     useEffect(() => {
         if (userData?.shippingAddress) {
             setShippingAddress(userData.shippingAddress);
@@ -42,11 +49,72 @@ function Checkout() {
         setBillingAddress(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleCardChange = (e) => {
+        const { name, value } = e.target;
+        
+        if (name === 'cardNumber') {
+            // Format card number with spaces every 4 digits
+            const formattedValue = value.replace(/\s/g, '').replace(/(\d{4})(?=\d)/g, '$1 ').trim();
+            setCardDetails(prev => ({ ...prev, [name]: formattedValue }));
+        } else if (name === 'expiryDate') {
+            // Format expiry date as MM/YY
+            const formattedValue = value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1/$2');
+            setCardDetails(prev => ({ ...prev, [name]: formattedValue }));
+        } else {
+            setCardDetails(prev => ({ ...prev, [name]: value }));
+        }
+    };
+
     const shippingFee = 40.00;
     const subtotal = getTotalPrice();
     const totalAmount = subtotal + shippingFee;
 
+    // Validate card details
+    const validateCardDetails = () => {
+        const { cardNumber, expiryDate, cvc } = cardDetails;
+        
+        if (!cardNumber || cardNumber.trim() === '') {
+            toast.error('Please enter your card number');
+            return false;
+        }
+        
+        if (!expiryDate || expiryDate.trim() === '') {
+            toast.error('Please enter card expiry date');
+            return false;
+        }
+        
+        if (!cvc || cvc.trim() === '') {
+            toast.error('Please enter CVC');
+            return false;
+        }
+        
+        // Basic validation for card number (should be 16 digits)
+        if (cardNumber.replace(/\s/g, '').length !== 16) {
+            toast.error('Please enter a valid 16-digit card number');
+            return false;
+        }
+        
+        // Basic validation for expiry date (MM/YY format)
+        if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+            toast.error('Please enter expiry date in MM/YY format');
+            return false;
+        }
+        
+        // Basic validation for CVC (3-4 digits)
+        if (cvc.length < 3 || cvc.length > 4) {
+            toast.error('Please enter a valid CVC (3-4 digits)');
+            return false;
+        }
+        
+        return true;
+    };
+
     const handlePayNow = async () => {
+        // Validate card details before proceeding
+        if (!validateCardDetails()) {
+            return;
+        }
+
         setIsProcessing(true);
         const orderData = {
             products: cartItems.map(item => ({
@@ -58,9 +126,10 @@ function Checkout() {
             shippingAddress,
             billingAddress: billingSameAsShipping ? shippingAddress : billingAddress,
             paymentDetails: {
-                cardNumber: '**** **** **** 1234',
-                expiryDate: '12/25'
-            }
+                cardNumber: cardDetails.cardNumber.replace(/\s/g, '').slice(-4), // Only send last 4 digits
+                expiryDate: cardDetails.expiryDate
+            },
+            paymentMethod: 'card' // Add payment method for vendor notifications
         };
 
         try {
@@ -123,9 +192,30 @@ function Checkout() {
                 <div className="checkout-section">
                     <h2>Payment Details</h2>
                     <p>This is a mock payment form. Do not enter real card details.</p>
-                    <input type="text" placeholder="Card Number" />
-                    <input type="text" placeholder="MM / YY" />
-                    <input type="text" placeholder="CVC" />
+                    <input 
+                        type="text" 
+                        name="cardNumber"
+                        placeholder="Card Number (16 digits)" 
+                        value={cardDetails.cardNumber}
+                        onChange={handleCardChange}
+                        maxLength="19"
+                    />
+                    <input 
+                        type="text" 
+                        name="expiryDate"
+                        placeholder="MM/YY" 
+                        value={cardDetails.expiryDate}
+                        onChange={handleCardChange}
+                        maxLength="5"
+                    />
+                    <input 
+                        type="text" 
+                        name="cvc"
+                        placeholder="CVC" 
+                        value={cardDetails.cvc}
+                        onChange={handleCardChange}
+                        maxLength="4"
+                    />
                 </div>
             </div>
 

@@ -37,6 +37,39 @@ const vendorSchema = new mongoose.Schema({
     isRejected: {
         type: Boolean,
         default: false
+    },
+    // Sales tracking
+    totalSales: {
+        type: Number,
+        default: 0
+    },
+    totalOrders: {
+        type: Number,
+        default: 0
+    },
+    totalProducts: {
+        type: Number,
+        default: 0
+    },
+    // Notification preferences
+    emailNotifications: {
+        type: Boolean,
+        default: true
+    },
+    pushNotifications: {
+        type: Boolean,
+        default: true
+    },
+    // Commission settings
+    commissionRate: {
+        type: Number,
+        default: 10 // Default 10% platform commission
+    },
+    // Payment information
+    bankDetails: {
+        accountNumber: String,
+        ifscCode: String,
+        accountHolderName: String
     }
 }, { timestamps: true })
 

@@ -1,47 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { getAllVendors, approveVendor, rejectVendor, deleteVendor, testGetVendors } from '../../../services/adminServices';
+import { getAllVendors, approveVendor, rejectVendor, deleteVendor } from '../../../services/adminServices';
 import { toast } from 'react-toastify';
-import './VendorManagement.css';
+import { FaCheck, FaTimes, FaTrash, FaSearch, FaEye, FaStore } from 'react-icons/fa';
 
 const VendorManagement = () => {
   const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all'); // all, pending, approved, rejected
-
-  const fetchVendors = async () => {
-    try {
-      console.log('Fetching vendors...');
-      const response = await getAllVendors();
-      console.log('Vendors response:', response);
-      console.log('Vendors data:', response.data);
-      setVendors(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching vendors:', error);
-      console.error('Error response:', error.response);
-      console.error('Error status:', error.response?.status);
-      console.error('Error data:', error.response?.data);
-      toast.error('Failed to fetch vendors');
-      setLoading(false);
-    }
-  };
-
-  const testFetchVendors = async () => {
-    try {
-      console.log('Testing vendor fetch without auth...');
-      const response = await testGetVendors();
-      console.log('Test vendors response:', response);
-      console.log('Test vendors data:', response.data);
-      toast.success(`Found ${response.data.count} vendors in database`);
-    } catch (error) {
-      console.error('Test error:', error);
-      toast.error('Test failed: ' + error.message);
-    }
-  };
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [selectedVendor, setSelectedVendor] = useState(null);
 
   useEffect(() => {
     fetchVendors();
   }, []);
+
+  const fetchVendors = async () => {
+    try {
+      setLoading(true);
+      const response = await getAllVendors();
+      setVendors(response.data);
+    } catch (error) {
+      console.error('Error fetching vendors:', error);
+      toast.error('Failed to load vendors');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleApprove = async (vendorId) => {
     try {
@@ -78,12 +62,26 @@ const VendorManagement = () => {
     }
   };
 
+  const handleView = (vendor) => {
+    setSelectedVendor(vendor);
+    toast.info(`Viewing details for ${vendor.name}`);
+  };
+
   const filteredVendors = vendors.filter(vendor => {
-    if (filter === 'all') return true;
-    if (filter === 'pending') return !vendor.isApproved && !vendor.isRejected;
-    if (filter === 'approved') return vendor.isApproved;
-    if (filter === 'rejected') return vendor.isRejected;
-    return true;
+    const matchesSearch = vendor.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         vendor.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         vendor.shopName?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    let matchesStatus = true;
+    if (filterStatus === 'pending') {
+      matchesStatus = !vendor.isApproved && !vendor.isRejected;
+    } else if (filterStatus === 'approved') {
+      matchesStatus = vendor.isApproved;
+    } else if (filterStatus === 'rejected') {
+      matchesStatus = vendor.isRejected;
+    }
+    
+    return matchesSearch && matchesStatus;
   });
 
   const getStatusBadge = (vendor) => {
@@ -101,10 +99,16 @@ const VendorManagement = () => {
       return (
         <div className="action-buttons">
           <button 
-            className="btn btn-danger btn-sm"
+            className="admin-btn admin-btn-secondary"
+            onClick={() => handleView(vendor)}
+          >
+            <FaEye /> View
+          </button>
+          <button 
+            className="admin-btn admin-btn-danger"
             onClick={() => handleDelete(vendor._id)}
           >
-            Delete
+            <FaTrash /> Delete
           </button>
         </div>
       );
@@ -112,16 +116,22 @@ const VendorManagement = () => {
       return (
         <div className="action-buttons">
           <button 
-            className="btn btn-success btn-sm"
+            className="admin-btn admin-btn-success"
             onClick={() => handleApprove(vendor._id)}
           >
-            Approve
+            <FaCheck /> Approve
           </button>
           <button 
-            className="btn btn-danger btn-sm"
+            className="admin-btn admin-btn-secondary"
+            onClick={() => handleView(vendor)}
+          >
+            <FaEye /> View
+          </button>
+          <button 
+            className="admin-btn admin-btn-danger"
             onClick={() => handleDelete(vendor._id)}
           >
-            Delete
+            <FaTrash /> Delete
           </button>
         </div>
       );
@@ -129,16 +139,22 @@ const VendorManagement = () => {
       return (
         <div className="action-buttons">
           <button 
-            className="btn btn-success btn-sm"
+            className="admin-btn admin-btn-success"
             onClick={() => handleApprove(vendor._id)}
           >
-            Approve
+            <FaCheck /> Approve
           </button>
           <button 
-            className="btn btn-warning btn-sm"
+            className="admin-btn admin-btn-warning"
             onClick={() => handleReject(vendor._id)}
           >
-            Reject
+            <FaTimes /> Reject
+          </button>
+          <button 
+            className="admin-btn admin-btn-secondary"
+            onClick={() => handleView(vendor)}
+          >
+            <FaEye /> View
           </button>
         </div>
       );
@@ -146,77 +162,105 @@ const VendorManagement = () => {
   };
 
   if (loading) {
-    return <div className="loading">Loading vendors...</div>;
+    return (
+      <div className="admin-content-section">
+        <div className="section-header">
+          <h2>Vendor Management</h2>
+        </div>
+        <div className="loading-skeleton">
+          {[1, 2, 3, 4].map((id) => (
+            <div key={id} className="vendor-skeleton">
+              <div className="skeleton-avatar"></div>
+              <div className="skeleton-details">
+                <div className="skeleton-name"></div>
+                <div className="skeleton-email"></div>
+                <div className="skeleton-shop"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="vendor-management">
-      <div className="vendor-header">
+    <div className="admin-content-section">
+      <div className="section-header">
         <h2>Vendor Management</h2>
-        <div className="vendor-actions">
-          <button onClick={testFetchVendors} className="test-btn">
-            Test DB Connection
-          </button>
-          <select 
-            value={filter} 
-            onChange={(e) => setFilter(e.target.value)}
-            className="filter-select"
-          >
-            <option value="all">All Vendors</option>
-            <option value="pending">Pending Approval</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
+      </div>
+
+      <div className="filters-section">
+        <div className="search-box">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search vendors..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
         </div>
+        <select 
+          value={filterStatus} 
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="filter-select"
+        >
+          <option value="all">All Vendors</option>
+          <option value="pending">Pending Approval</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
       </div>
 
       <div className="vendor-stats">
-        <div className="stat-card">
-          <h3>Total Vendors</h3>
-          <p>{vendors.length}</p>
+        <div className="stat-item">
+          <span className="stat-label">Total Vendors:</span>
+          <span className="stat-value">{vendors.length}</span>
         </div>
-        <div className="stat-card">
-          <h3>Pending Approval</h3>
-          <p>{vendors.filter(v => !v.isApproved && !v.isRejected).length}</p>
+        <div className="stat-item">
+          <span className="stat-label">Pending:</span>
+          <span className="stat-value">{vendors.filter(v => !v.isApproved && !v.isRejected).length}</span>
         </div>
-        <div className="stat-card">
-          <h3>Approved</h3>
-          <p>{vendors.filter(v => v.isApproved).length}</p>
+        <div className="stat-item">
+          <span className="stat-label">Approved:</span>
+          <span className="stat-value">{vendors.filter(v => v.isApproved).length}</span>
         </div>
-        <div className="stat-card">
-          <h3>Rejected</h3>
-          <p>{vendors.filter(v => v.isRejected).length}</p>
+        <div className="stat-item">
+          <span className="stat-label">Rejected:</span>
+          <span className="stat-value">{vendors.filter(v => v.isRejected).length}</span>
         </div>
       </div>
 
-      <div className="vendor-list">
+      <div className="vendors-grid">
         {filteredVendors.length === 0 ? (
-          <div className="no-vendors">
-            <p>No vendors found matching the selected filter.</p>
+          <div className="no-data">
+            <p>No vendors found matching your criteria.</p>
           </div>
         ) : (
-          <div className="vendor-grid">
-            {filteredVendors.map((vendor) => (
-              <div key={vendor._id} className="vendor-card">
-                <div className="vendor-info">
-                  <div className="vendor-header-info">
-                    <h4>{vendor.name}</h4>
-                    {getStatusBadge(vendor)}
-                  </div>
-                  <div className="vendor-details">
-                    <p><strong>Email:</strong> {vendor.email}</p>
-                    <p><strong>Phone:</strong> {vendor.phone}</p>
-                    <p><strong>Shop Name:</strong> {vendor.shopName}</p>
-                    <p><strong>Address:</strong> {vendor.address}</p>
-                    <p><strong>Registered:</strong> {new Date(vendor.createdAt).toLocaleDateString()}</p>
-                  </div>
+          filteredVendors.map((vendor) => (
+            <div key={vendor._id} className="vendor-card">
+              <div className="vendor-header">
+                <div className="vendor-avatar">
+                  <FaStore />
                 </div>
-                <div className="vendor-actions">
-                  {getActionButtons(vendor)}
+                <div className="vendor-status">
+                  {getStatusBadge(vendor)}
                 </div>
               </div>
-            ))}
-          </div>
+              <div className="vendor-details">
+                <h3>{vendor.name}</h3>
+                <p className="vendor-email">{vendor.email}</p>
+                <p className="vendor-shop">{vendor.shopName}</p>
+                <p className="vendor-phone">{vendor.phone || 'No phone number'}</p>
+                <p className="vendor-joined">
+                  Joined: {new Date(vendor.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+              <div className="vendor-actions">
+                {getActionButtons(vendor)}
+              </div>
+            </div>
+          ))
         )}
       </div>
     </div>

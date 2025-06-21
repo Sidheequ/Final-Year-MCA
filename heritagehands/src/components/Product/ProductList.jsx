@@ -12,7 +12,7 @@ const ProductList = () => {
     const fetchProducts = async () => {
       try {
         const response = await listProducts();
-        setProducts(response.data);
+        setProducts(response.data.productList);
       } catch (err) {
         setError(err.message || 'Failed to fetch products');
         console.error('Fetch error:', err);

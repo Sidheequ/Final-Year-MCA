@@ -15,7 +15,7 @@
 
 .section-container {
   width: 100%;
-  padding: 0;
+  padding: 3rem 1rem;
   background-color: #ffffff;
   display: flex;
   justify-content: center;
@@ -23,9 +23,9 @@
 
 .content-wrapper {
   width: 100%;
-  max-width: 1400px;
-  padding: 0 2rem;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 0 1rem;
 }
 
 /* Ensure all images maintain aspect ratio */
@@ -57,4 +57,32 @@ section {
   .content-wrapper {
     padding: 0 0.5rem;
   }
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa; /* A neutral background color */
+  font-size: 15px; /* Standardize base font size */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  color: #343a40;
+}
+
+/* Reducing default heading sizes */
+h1 { font-size: 2rem; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.1rem; }
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }

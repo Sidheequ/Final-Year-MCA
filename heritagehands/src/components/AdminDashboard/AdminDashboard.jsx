@@ -1,53 +1,110 @@
 import React, { useState, useEffect } from 'react';
-import './AdminDashboard.css';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { 
+  FaTachometerAlt, 
+  FaUsers, 
+  FaBox, 
+  FaStore, 
+  FaChartBar, 
+  FaComments,
+  FaSignOutAlt,
+  FaUser,
+  FaCog
+} from 'react-icons/fa';
+
+// Import components
 import AdminSidebar from './components/AdminSidebar';
-import AdminHeader from './components/AdminHeader';
-import DashboardStats from './components/DashboardStats';
-import RecentOrders from './components/RecentOrders';
+import AdminNavbar from './components/AdminNavbar';
+import AdminStatCards from './components/AdminStatCards';
+import AdminProfile from './components/AdminProfile';
 import ProductManagement from './components/ProductManagement';
 import VendorManagement from './components/VendorManagement';
-import { useNavigate } from 'react-router-dom';
+import SalesReport from './components/SalesReport';
+import Feedback from './components/Feedback';
+import CustomerManagement from './components/CustomerManagement';
+import RecentOrders from './components/RecentOrders';
+import Analytics from './components/Analytics';
+
+import './AdminDashboard.css';
 
 const AdminDashboard = () => {
-  const [activeSection, setActiveSection] = useState('dashboard');
   const navigate = useNavigate();
+  const { admin } = useSelector((state) => state.admin);
+  const [activeSection, setActiveSection] = useState('dashboard');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // Check if admin is logged in
   useEffect(() => {
-    const adminToken = document.cookie.includes('Admin_token');
-    if (!adminToken) {
-      console.log('No admin token found, redirecting to admin login');
-      navigate('/adminlogin');
+    if (!admin) {
+      navigate('/admin/login');
+      toast.error('Please login to access admin dashboard');
     }
-  }, [navigate]);
+  }, [admin, navigate]);
+
+  const handleLogout = () => {
+    // TODO: Implement logout functionality
+    toast.success('Logged out successfully');
+    navigate('/admin/login');
+  };
 
   const renderContent = () => {
-    console.log('Rendering content for section:', activeSection);
     switch (activeSection) {
       case 'dashboard':
         return (
           <>
-            <DashboardStats />
-            <RecentOrders />
+            <AdminStatCards />
+            <div className="dashboard-grid">
+              <RecentOrders />
+              <Analytics />
+            </div>
           </>
         );
       case 'products':
         return <ProductManagement />;
       case 'vendors':
-        console.log('Rendering VendorManagement component');
         return <VendorManagement />;
-      case 'orders':
-        return <RecentOrders />;
+      case 'customers':
+        return <CustomerManagement />;
+      case 'sales':
+        return <SalesReport />;
+      case 'feedback':
+        return <Feedback />;
+      case 'profile':
+        return <AdminProfile />;
       default:
-        return <DashboardStats />;
+        return (
+          <>
+            <AdminStatCards />
+            <div className="dashboard-grid">
+              <RecentOrders />
+              <Analytics />
+            </div>
+          </>
+        );
     }
   };
 
+  if (!admin) {
+    return null;
+  }
+
   return (
     <div className="admin-dashboard">
-      <AdminSidebar activeSection={activeSection} setActiveSection={setActiveSection} />
+      <AdminSidebar 
+        activeSection={activeSection}
+        setActiveSection={setActiveSection}
+        collapsed={sidebarCollapsed}
+        setCollapsed={setSidebarCollapsed}
+      />
+      
       <div className="admin-main">
-        <AdminHeader />
+        <AdminNavbar 
+          admin={admin}
+          onLogout={handleLogout}
+          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+        />
+        
         <div className="admin-content">
           {renderContent()}
         </div>
