@@ -1,5 +1,8 @@
 import React from 'react';
 import './HeroSection.css';
+import i1  from '../../assets/1.jpg'
+import i2 from '../../assets/2.jpg'
+import i3 from '../../assets/11.jpg'
 
 function HeroSection() {
   return (
@@ -15,15 +18,15 @@ function HeroSection() {
             <div className="image-grid">
               <div className="image-column">
                 <div className="image-box hide-on-small">
-                  <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/home-page-03-hero-image-tile-01.jpg" alt="" />
+                  <img src={i1} alt="" />
                 </div>
                 <div className="image-box">
-                  <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/home-page-03-hero-image-tile-02.jpg" alt="" />
+                  <img src={i2} alt="" />
                 </div>
               </div>
               <div className="image-column">
                 <div className="image-box">
-                  <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/home-page-03-hero-image-tile-03.jpg" alt="" />
+                  <img src={i3} alt="" />
                 </div>
               </div>
             </div>
