@@ -11,7 +11,8 @@ const authAdmin = (req, res,next) => {
             return res.status(401).json({ error: "jwt not authorised" });
         }
 
-        const verifiedToken= jwt.verify(Admin_token, process.env.JWT_SECRET);
+        const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
+        const verifiedToken= jwt.verify(Admin_token, JWT_SECRET);
         console.log('Verified token:', verifiedToken);
         
         if(!verifiedToken){

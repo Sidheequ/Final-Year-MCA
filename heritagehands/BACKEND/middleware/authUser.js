@@ -13,7 +13,8 @@ const authUser = (req, res, next) => {
             return res.status(401).json({ error: 'jwt not found' })
         }
 
-        const verifiedToken = jwt.verify(token, process.env.JWT_SECRET)
+        const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
+        const verifiedToken = jwt.verify(token, JWT_SECRET)
         if (!verifiedToken) {
             return res.status(401).json({ error: "User not authorized" })
         }

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = process.env.REACT_APP_BASE_URL;
+const baseURL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000/api/v1';
 
 const axiosinstance = axios.create({
   baseURL: baseURL,
@@ -43,7 +43,22 @@ axiosinstance.interceptors.response.use(
       // Handle specific error cases
       if (error.response.status === 401) {
         console.error('Unauthorized - User needs to login');
-        // You can redirect to login here if needed
+        
+        // Check if it's a JWT signature error
+        if (error.response.data.error === 'invalid signature' || 
+            error.response.data.error === 'jwt malformed' ||
+            error.response.data.error === 'jwt expired') {
+          // Clear invalid token
+          localStorage.removeItem('token');
+          console.log('Invalid token cleared from localStorage');
+          
+          // Redirect to login page
+          if (window.location.pathname !== '/login' && 
+              window.location.pathname !== '/signup' && 
+              window.location.pathname !== '/adminlogin') {
+            window.location.href = '/login';
+          }
+        }
       } else if (error.response.status === 404) {
         console.error('API endpoint not found');
       } else if (error.response.status >= 500) {

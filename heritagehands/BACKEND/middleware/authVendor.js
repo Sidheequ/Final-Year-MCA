@@ -1,31 +1,36 @@
 const jwt = require('jsonwebtoken');
 const vendorDb = require('../Models/vendorModel');
 
-const authVendor = async (req, res, next) => {
+const authVendor = (req, res, next) => {
     try {
-        const token = req.cookies.vendorToken;
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ error: 'jwt not found' });
+        }
+
+        const token = authHeader.split(' ')[1];
 
         if (!token) {
-            return res.status(401).json({ error: "Access denied. No token provided." });
+            return res.status(401).json({ error: 'jwt not found' })
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const vendor = await vendorDb.findById(decoded.id).select('-password');
-
-        if (!vendor) {
-            return res.status(401).json({ error: "Invalid token." });
+        const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
+        const decoded = jwt.verify(token, JWT_SECRET);
+        
+        if (!decoded) {
+            return res.status(401).json({ error: "Vendor not authorized" })
         }
 
-        if (!vendor.isApproved) {
-            return res.status(401).json({ error: "Account not approved yet." });
+        if (decoded.role !== "vendor") {
+            return res.status(401).json({ error: "Access denied" })
         }
 
-        req.vendor = vendor;
-        next();
+        req.vendor = decoded.id
+
+        next()
     } catch (error) {
-        console.error(error);
-        res.status(401).json({ error: "Invalid token." });
+        res.status(error.status || 401).json({ error: error.message || "vendor authorization failed" })
     }
-};
+}
 
 module.exports = authVendor; 

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { adminLogout } from '../../services/userServices';
+import { removeAdmin } from '../../redux/features/adminSlice';
 import { 
   FaTachometerAlt, 
   FaUsers, 
@@ -31,6 +33,7 @@ import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { admin } = useSelector((state) => state.admin);
   const [activeSection, setActiveSection] = useState('dashboard');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -42,23 +45,31 @@ const AdminDashboard = () => {
     }
   }, [admin, navigate]);
 
-  const handleLogout = () => {
-    // TODO: Implement logout functionality
-    toast.success('Logged out successfully');
-    navigate('/admin/login');
+  const handleLogout = async () => {
+    try {
+      await adminLogout();
+      dispatch(removeAdmin());
+      toast.success('Logged out successfully');
+      navigate('/admin/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Even if logout fails, clear local state
+      dispatch(removeAdmin());
+      navigate('/admin/login');
+    }
   };
 
   const renderContent = () => {
     switch (activeSection) {
       case 'dashboard':
         return (
-          <>
+          <div className="dashboard-content">
             <AdminStatCards />
             <div className="dashboard-grid">
               <RecentOrders />
               <Analytics />
             </div>
-          </>
+          </div>
         );
       case 'products':
         return <ProductManagement />;
@@ -74,13 +85,13 @@ const AdminDashboard = () => {
         return <AdminProfile />;
       default:
         return (
-          <>
+          <div className="dashboard-content">
             <AdminStatCards />
             <div className="dashboard-grid">
               <RecentOrders />
               <Analytics />
             </div>
-          </>
+          </div>
         );
     }
   };
@@ -90,22 +101,26 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="admin-dashboard">
-      <AdminSidebar 
-        activeSection={activeSection}
-        setActiveSection={setActiveSection}
-        collapsed={sidebarCollapsed}
-        setCollapsed={setSidebarCollapsed}
-      />
+    <div className="admin-dashboard-grid">
+      {/* Left Grid - Sidebar */}
+      <div className={`admin-sidebar-grid ${sidebarCollapsed ? 'collapsed' : ''}`}>
+        <AdminSidebar 
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+          collapsed={sidebarCollapsed}
+          setCollapsed={setSidebarCollapsed}
+          onLogout={handleLogout}
+        />
+      </div>
       
-      <div className="admin-main">
+      {/* Right Grid - Main Content */}
+      <div className="admin-content-grid">
         <AdminNavbar 
           admin={admin}
-          onLogout={handleLogout}
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
         
-        <div className="admin-content">
+        <div className="admin-content-wrapper">
           {renderContent()}
         </div>
       </div>

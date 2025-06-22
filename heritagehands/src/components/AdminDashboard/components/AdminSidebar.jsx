@@ -8,10 +8,11 @@ import {
   FaComments,
   FaUser,
   FaCog,
-  FaBars
+  FaBars,
+  FaSignOutAlt
 } from 'react-icons/fa';
 
-const AdminSidebar = ({ activeSection, setActiveSection, collapsed, setCollapsed }) => {
+const AdminSidebar = ({ activeSection, setActiveSection, collapsed, setCollapsed, onLogout }) => {
   const navItems = [
     { key: 'dashboard', icon: <FaTachometerAlt />, label: 'Dashboard' },
     { key: 'products', icon: <FaBox />, label: 'Product Management' },
@@ -31,6 +32,7 @@ const AdminSidebar = ({ activeSection, setActiveSection, collapsed, setCollapsed
         {!collapsed && (
           <div className="sidebar-brand">
             <h3>Admin Panel</h3>
+            <p>Heritage Hands</p>
           </div>
         )}
       </div>
@@ -50,10 +52,20 @@ const AdminSidebar = ({ activeSection, setActiveSection, collapsed, setCollapsed
       </nav>
 
       <div className="sidebar-footer">
+        <button
+          className="sidebar-link logout-btn"
+          onClick={onLogout}
+          title={collapsed ? 'Logout' : ''}
+        >
+          <span className="sidebar-icon">
+            <FaSignOutAlt />
+          </span>
+          {!collapsed && <span className="sidebar-label">Logout</span>}
+        </button>
+        
         {!collapsed && (
           <div className="sidebar-info">
-            <p>Heritage Hands</p>
-            <small>Admin Dashboard</small>
+            <small>Admin Dashboard v1.0</small>
           </div>
         )}
       </div>

@@ -151,3 +151,11 @@ export const updateUserAddress = async (addressData) => {
         throw error;
     }
 };
+
+// Utility function to clear user session
+export const clearUserSession = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    // You can also clear Redux state here if needed
+    window.location.href = '/login';
+};

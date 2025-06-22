@@ -57,7 +57,12 @@ const login = async (req, res) => {
             return res.status(400).json({ error: "Passwords does not match" })
         }
         const token = createToken(adminExist._id,"admin")
-        res.cookie("Admin_token", token, { sameSite: "None", secure: true });
+        res.cookie("Admin_token", token, { 
+          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', 
+          secure: process.env.NODE_ENV === 'production',
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        });
         return res.status(200).json({ message: "admin login successfull", adminExist })
 
     } catch (error) {
@@ -246,6 +251,84 @@ const getAllProducts = async (req, res) => {
     }
 };
 
+// Add New Product (Admin)
+const addProduct = async (req, res) => {
+    try {
+        const { title, description, category, price, quantity, image } = req.body;
+        
+        if (!title || !description || !category || !price || !quantity) {
+            return res.status(400).json({ message: "All required fields must be provided" });
+        }
+
+        const newProduct = new productDb({
+            title,
+            description,
+            category,
+            price: parseFloat(price),
+            quantity: parseInt(quantity),
+            image: image || '',
+            // Admin-created products don't have a vendor
+            vendorId: null
+        });
+
+        const savedProduct = await newProduct.save();
+        res.status(201).json({ message: "Product added successfully", product: savedProduct });
+    } catch (error) {
+        console.error('Error adding product:', error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// Update Product (Admin)
+const updateProduct = async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const updateData = req.body;
+
+        const product = await productDb.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        // Update only provided fields
+        Object.keys(updateData).forEach(key => {
+            if (updateData[key] !== undefined) {
+                if (key === 'price') {
+                    product[key] = parseFloat(updateData[key]);
+                } else if (key === 'quantity') {
+                    product[key] = parseInt(updateData[key]);
+                } else {
+                    product[key] = updateData[key];
+                }
+            }
+        });
+
+        const updatedProduct = await product.save();
+        res.status(200).json({ message: "Product updated successfully", product: updatedProduct });
+    } catch (error) {
+        console.error('Error updating product:', error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// Delete Product (Admin)
+const deleteProduct = async (req, res) => {
+    try {
+        const { productId } = req.params;
+
+        const product = await productDb.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        await productDb.findByIdAndDelete(productId);
+        res.status(200).json({ message: "Product deleted successfully" });
+    } catch (error) {
+        console.error('Error deleting product:', error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 // Get All Customers (Admin)
 const getAllCustomers = async (req, res) => {
     try {
@@ -324,5 +407,8 @@ module.exports={
     getAllProducts,
     getAllCustomers,
     getAllOrders,
-    getSalesAnalytics
+    getSalesAnalytics,
+    addProduct,
+    updateProduct,
+    deleteProduct
 }

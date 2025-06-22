@@ -10,7 +10,10 @@ const {
     getAllProducts,
     getAllCustomers,
     getAllOrders,
-    getSalesAnalytics
+    getSalesAnalytics,
+    addProduct,
+    updateProduct,
+    deleteProduct
 } = require('../../Controllers/adminController')
 const authAdmin = require('../../middleware/authAdmin')
 
@@ -39,6 +42,9 @@ adminRouter.get("/dashboard-stats", authAdmin, getDashboardStats)
 
 // Product Management Routes (Protected)
 adminRouter.get("/products", authAdmin, getAllProducts)
+adminRouter.post("/products", authAdmin, addProduct)
+adminRouter.put("/products/:productId", authAdmin, updateProduct)
+adminRouter.delete("/products/:productId", authAdmin, deleteProduct)
 
 // Customer Management Routes (Protected)
 adminRouter.get("/customers", authAdmin, getAllCustomers)

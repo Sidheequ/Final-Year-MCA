@@ -123,7 +123,7 @@ const ProductManagement = () => {
         <div className="loading-skeleton">
           {[1, 2, 3, 4].map((id) => (
             <div key={id} className="product-skeleton">
-              <div className="skeleton-image"></div>
+              <div className="skeleton-image "></div>
               <div className="skeleton-details">
                 <div className="skeleton-title"></div>
                 <div className="skeleton-category"></div>
