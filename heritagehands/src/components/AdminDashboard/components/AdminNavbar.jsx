@@ -5,9 +5,9 @@ const AdminNavbar = ({ onToggleSidebar }) => {
   return (
     <header className="admin-navbar">
       <div className="navbar-left">
-        <button className="navbar-toggle" onClick={onToggleSidebar}>
+        {/* <button className="navbar-toggle" >
           <FaBars />
-        </button>
+        </button> */}
         <div className="navbar-welcome">
           <h2>Welcome, Admin!</h2>
           <p>Manage your e-commerce platform and monitor business performance</p>
