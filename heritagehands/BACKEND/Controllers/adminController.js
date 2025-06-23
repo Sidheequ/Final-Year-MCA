@@ -63,7 +63,7 @@ const login = async (req, res) => {
           httpOnly: true,
           maxAge: 24 * 60 * 60 * 1000 // 24 hours
         });
-        return res.status(200).json({ message: "admin login successfull", adminExist })
+        return res.status(200).json({ message: "admin login successfull", adminExist, token })
 
     } catch (error) {
         console.log(error)
@@ -395,6 +395,33 @@ const getSalesAnalytics = async (req, res) => {
     }
 };
 
+// Get Vendor Details (Admin)
+const getVendorDetails = async (req, res) => {
+    try {
+        const { vendorId } = req.params;
+        const vendor = await vendorDb.findById(vendorId).select('-password -confirmpassword');
+        if (!vendor) {
+            return res.status(404).json({ message: 'Vendor not found' });
+        }
+        res.status(200).json(vendor);
+    } catch (error) {
+        console.error('Error fetching vendor details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Get Products for a Vendor (Admin)
+const getVendorProductsForAdmin = async (req, res) => {
+    try {
+        const { vendorId } = req.params;
+        const products = await productDb.find({ vendorId });
+        res.status(200).json(products);
+    } catch (error) {
+        console.error('Error fetching vendor products:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 module.exports={
     register,
     login,
@@ -410,5 +437,7 @@ module.exports={
     getSalesAnalytics,
     addProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getVendorDetails,
+    getVendorProductsForAdmin
 }

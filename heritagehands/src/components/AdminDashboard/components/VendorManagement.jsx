@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAllVendors, approveVendor, rejectVendor, deleteVendor } from '../../../services/adminServices';
+import { getAllVendors, approveVendor, rejectVendor, deleteVendor, getVendorDetails, getVendorProductsForAdmin } from '../../../services/adminServices';
 import { toast } from 'react-toastify';
 import { FaCheck, FaTimes, FaTrash, FaSearch, FaEye, FaStore } from 'react-icons/fa';
 
@@ -9,6 +9,9 @@ const VendorManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedVendor, setSelectedVendor] = useState(null);
+  const [vendorDetailsModal, setVendorDetailsModal] = useState(false);
+  const [vendorDetails, setVendorDetails] = useState(null);
+  const [vendorProducts, setVendorProducts] = useState([]);
 
   useEffect(() => {
     fetchVendors();
@@ -62,9 +65,27 @@ const VendorManagement = () => {
     }
   };
 
-  const handleView = (vendor) => {
-    setSelectedVendor(vendor);
-    toast.info(`Viewing details for ${vendor.name}`);
+  const handleView = async (vendor) => {
+    try {
+      setLoading(true);
+      const [detailsRes, productsRes] = await Promise.all([
+        getVendorDetails(vendor._id),
+        getVendorProductsForAdmin(vendor._id)
+      ]);
+      setVendorDetails(detailsRes.data);
+      setVendorProducts(productsRes.data);
+      setVendorDetailsModal(true);
+    } catch (error) {
+      toast.error('Failed to fetch vendor details or products');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const closeVendorDetailsModal = () => {
+    setVendorDetailsModal(false);
+    setVendorDetails(null);
+    setVendorProducts([]);
   };
 
   const filteredVendors = vendors.filter(vendor => {
@@ -263,6 +284,60 @@ const VendorManagement = () => {
           ))
         )}
       </div>
+
+      {/* Vendor Details Modal */}
+      {vendorDetailsModal && vendorDetails && (
+        <div className="modal-overlay" onClick={closeVendorDetailsModal}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3>Vendor Details</h3>
+            <ul className="vendor-details-list">
+              <li><strong>Name:</strong> {vendorDetails.name}</li>
+              <li><strong>Email:</strong> {vendorDetails.email}</li>
+              <li><strong>Shop Name:</strong> {vendorDetails.shopName}</li>
+              <li><strong>Phone:</strong> {vendorDetails.phone || 'N/A'}</li>
+              <li><strong>Address:</strong> {vendorDetails.address || 'N/A'}</li>
+              <li><strong>Status:</strong> {getStatusBadge(vendorDetails)}</li>
+              <li><strong>Joined:</strong> {new Date(vendorDetails.createdAt).toLocaleString()}</li>
+            </ul>
+            <h4>Products</h4>
+            {vendorProducts.length === 0 ? (
+              <p>No products found for this vendor.</p>
+            ) : (
+              <table className="vendor-products-table">
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {vendorProducts.map(product => (
+                    <tr key={product._id}>
+                      <td>
+                        {product.image ? (
+                          <img src={product.image} alt={product.title} style={{ width: '50px', height: '50px', objectFit: 'cover' }} />
+                        ) : (
+                          'No Image'
+                        )}
+                      </td>
+                      <td>{product.title}</td>
+                      <td>{product.description}</td>
+                      <td>{product.category}</td>
+                      <td>₹{product.price}</td>
+                      <td>{product.quantity}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            <button className="admin-btn admin-btn-secondary" onClick={closeVendorDetailsModal}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

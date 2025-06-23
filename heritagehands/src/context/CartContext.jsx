@@ -158,16 +158,13 @@ export const CartProvider = ({ children }) => {
   
   const navigate = useNavigate();
 
-  if (loading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#f0f2f5' }}>
-        <LoadingAnimation />
-      </div>
-    );
-  }
-
   return (
     <CartContext.Provider value={value}>
+      {loading && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#f0f2f5', position: 'fixed', top: 0, left: 0, width: '100vw', zIndex: 9999 }}>
+          <LoadingAnimation />
+        </div>
+      )}
       {children}
       {showOfflineModal && (
         <OfflineCartModal

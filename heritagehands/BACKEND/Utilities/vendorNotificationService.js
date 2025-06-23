@@ -485,6 +485,21 @@ class VendorNotificationService {
             console.error('Error sending cancellation notification email:', error);
         }
     }
+
+    /**
+     * Create admin notification
+     * @param {Object} notificationData - Notification data for admin
+     */
+    static async createAdminNotification(notificationData) {
+        try {
+            const notification = new Notification(notificationData);
+            await notification.save();
+            return notification;
+        } catch (error) {
+            console.error('Error creating admin notification:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = VendorNotificationService; 

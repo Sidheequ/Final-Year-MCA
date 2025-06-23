@@ -17,6 +17,7 @@ const {
 } = require('../../Controllers/vendorController');
 const authVendor = require('../../middleware/authVendor');
 const upload = require('../../middleware/multer');
+const { getVendorReviews } = require('../../Controllers/reviewController');
 
 // Vendor Authentication Routes
 router.post('/register', register);
@@ -40,5 +41,8 @@ router.get('/sales-report/export', authVendor, exportSalesReport);
 // Vendor Dashboard Routes (Protected)
 router.get('/dashboard-stats', authVendor, getVendorDashboardStats);
 router.put('/notification-preferences', authVendor, updateNotificationPreferences);
+
+// Vendor reviews
+router.get('/:vendorId/reviews', getVendorReviews);
 
 module.exports = router; 

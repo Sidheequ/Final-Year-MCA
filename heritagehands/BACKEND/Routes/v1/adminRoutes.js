@@ -13,7 +13,9 @@ const {
     getSalesAnalytics,
     addProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getVendorDetails,
+    getVendorProductsForAdmin
 } = require('../../Controllers/adminController')
 const authAdmin = require('../../middleware/authAdmin')
 
@@ -60,5 +62,7 @@ adminRouter.get("/vendors", authAdmin, getAllVendors)
 adminRouter.put("/vendors/:vendorId/approve", authAdmin, approveVendor)
 adminRouter.put("/vendors/:vendorId/reject", authAdmin, rejectVendor)
 adminRouter.delete("/vendors/:vendorId", authAdmin, deleteVendor)
+adminRouter.get("/vendors/:vendorId", authAdmin, getVendorDetails)
+adminRouter.get("/vendors/:vendorId/products", authAdmin, getVendorProductsForAdmin)
 
 module.exports = adminRouter

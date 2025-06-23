@@ -4,11 +4,16 @@ const notificationSchema = new mongoose.Schema({
     vendorId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'vendors',
-        required: true
+        required: false
+    },
+    adminId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'admin',
+        required: false
     },
     type: {
         type: String,
-        enum: ['order_placed', 'payment_received', 'stock_low', 'order_cancelled'],
+        enum: ['order_placed', 'payment_received', 'stock_low', 'order_cancelled', 'admin_order_pending'],
         required: true
     },
     title: {

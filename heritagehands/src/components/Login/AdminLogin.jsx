@@ -30,6 +30,10 @@ function AdminLogin() {
       console.log(response);
       toast.success("Admin login successful!");
       dispatch(saveAdmin(response.data.adminExist || response.data));
+      // Save the token to localStorage for authenticated requests
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+      }
       navigate("/admindashboard");
     } catch (error) {
       console.log(error);

@@ -64,6 +64,23 @@ const createOrder = async (req, res) => {
             // The order is already created, we just log the error
         }
 
+        // Notify all admins about the pending card order
+        try {
+            const adminDb = require('../Models/adminModel');
+            const allAdmins = await adminDb.find();
+            for (const admin of allAdmins) {
+                await VendorNotificationService.createAdminNotification({
+                    adminId: admin._id,
+                    type: 'admin_order_pending',
+                    title: 'New Pending Order (Card Payment)',
+                    message: `User ${user.name} placed an order (ID: ${newOrder._id}) with card payment. Status: Pending.`,
+                    orderId: newOrder._id
+                });
+            }
+        } catch (adminNotifError) {
+            console.error('Error creating admin notification:', adminNotifError);
+        }
+
         // Update the user's default shipping address
         await User.findByIdAndUpdate(userId, { shippingAddress });
 

@@ -230,4 +230,14 @@ export const getSystemStats = async () => {
     } catch (error) {
         throw error;
     }
+};
+
+// Get Products for a Vendor (Admin)
+export const getVendorProductsForAdmin = async (vendorId) => {
+    try {
+        const response = await axiosInstance.get(`/admin/vendors/${vendorId}/products`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
 }; 

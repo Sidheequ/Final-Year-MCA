@@ -220,3 +220,23 @@
   }
 }
 
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .card {
+    width: 260px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: calc(50% - 2rem) !important;
+    margin: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    width: calc(100% - 2rem) !important;
+    margin: 1rem;
+  }
+}

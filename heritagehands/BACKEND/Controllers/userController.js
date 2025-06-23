@@ -29,10 +29,9 @@ const register = async (req, res) => {
 
         const saved = await newUser.save()
         if (saved) {
-            const token = createToken(saved._id)
-            // res.cookie("token", token)
+            const token = createToken(saved._id, 'user')
             res.cookie("token", token,{sameSite:"None", secure:true});
-            return res.status(200).json({ message: "user Created" })
+            return res.status(200).json({ message: "user Created", token })
         }
     } catch (error) {
         console.log(error)
@@ -56,7 +55,7 @@ const login = async (req, res) => {
         if (!passwordMatch) {
             return res.status(400).json({ error: "Passwords does not match" })
         }
-        const token = createToken(userExist._id)
+        const token = createToken(userExist._id, 'user')
         // res.cookie("token", token,{sameSite:"None", secure:true});
         return res.status(200).json({ message: "user login successfull", userExist, token })
 

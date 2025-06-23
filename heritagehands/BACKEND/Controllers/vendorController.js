@@ -66,7 +66,7 @@ const login = async (req, res) => {
 
         const token = createToken(vendorExist._id)
         res.cookie("vendorToken", token, { sameSite: "None", secure: true });
-        return res.status(200).json({ message: "Vendor login successful", vendorExist })
+        return res.status(200).json({ message: "Vendor login successful", vendorExist, token })
 
     } catch (error) {
         console.log(error)
@@ -95,7 +95,7 @@ const logout = (req, res) => {
 const createProduct = async (req, res) => {
     try {
         const { title, description, category, price, quantity } = req.body;
-        const vendorId = req.vendor._id; // From auth middleware
+        const vendorId = req.vendor; // From auth middleware
 
         if (!title || !description || !category || !price || quantity === undefined) {
             return res.status(400).json({ message: "All fields are required" });
@@ -133,7 +133,7 @@ const createProduct = async (req, res) => {
 // Get Vendor's Products
 const getVendorProducts = async (req, res) => {
     try {
-        const vendorId = req.vendor._id;
+        const vendorId = req.vendor;
         const products = await productDb.find({ vendorId: vendorId });
         res.status(200).json(products);
     } catch (error) {
@@ -147,7 +147,7 @@ const updateProduct = async (req, res) => {
     try {
         const { productId } = req.params;
         const { title, description, category, price, quantity } = req.body;
-        const vendorId = req.vendor._id;
+        const vendorId = req.vendor;
 
         let imageUrl;
 
@@ -181,7 +181,7 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const { productId } = req.params;
-        const vendorId = req.vendor._id;
+        const vendorId = req.vendor;
 
         const existingProduct = await productDb.findOne({ _id: productId, vendorId: vendorId });
         if (!existingProduct) {

@@ -28,6 +28,9 @@ function VendorLog() {
     try {
       const response = await vendorLogin(formData);
       console.log(response);
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+      }
       toast.success("Vendor login successful!");
       dispatch(saveVendor(response.data.vendorExist));
       navigate('/vendordashboard');
