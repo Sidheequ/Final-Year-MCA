@@ -104,15 +104,15 @@ const Feedback = () => {
 
   const filteredFeedback = feedback.filter(item => {
     const matchesSearch = item.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.comment?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.productName?.toLowerCase().includes(searchTerm.toLowerCase());
+                         item.message?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         item.email?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesRating = filterRating === 'all' || 
-                         (filterRating === 'positive' && item.rating >= 4) ||
-                         (filterRating === 'negative' && item.rating <= 2) ||
-                         (filterRating === 'neutral' && item.rating === 3);
+    const matchesStatus = filterRating === 'all' || 
+                         (filterRating === 'positive' && item.status === 'replied') ||
+                         (filterRating === 'negative' && item.status === 'pending') ||
+                         (filterRating === 'neutral' && item.status === 'resolved');
     
-    return matchesSearch && matchesRating;
+    return matchesSearch && matchesStatus;
   });
 
   if (loading) {
@@ -151,12 +151,8 @@ const Feedback = () => {
           <span className="stat-value">{feedbackStats.total}</span>
         </div>
         <div className="stat-item">
-          <span className="stat-label">Average Rating:</span>
-          <span className="stat-value">{feedbackStats.averageRating.toFixed(1)} ⭐</span>
-        </div>
-        <div className="stat-item">
-          <span className="stat-label">Positive Reviews:</span>
-          <span className="stat-value">{feedbackStats.positive}</span>
+          <span className="stat-label">Replied:</span>
+          <span className="stat-value">{feedbackStats.replied}</span>
         </div>
         <div className="stat-item">
           <span className="stat-label">Pending Replies:</span>
@@ -179,10 +175,10 @@ const Feedback = () => {
           onChange={(e) => setFilterRating(e.target.value)}
           className="filter-select"
         >
-          <option value="all">All Ratings</option>
-          <option value="positive">Positive (4-5 stars)</option>
-          <option value="neutral">Neutral (3 stars)</option>
-          <option value="negative">Negative (1-2 stars)</option>
+          <option value="all">All Messages</option>
+          <option value="positive">Replied</option>
+          <option value="negative">Pending</option>
+          <option value="neutral">Resolved</option>
         </select>
       </div>
 
@@ -201,27 +197,25 @@ const Feedback = () => {
                   </div>
                   <div className="customer-details">
                     <h4>{item.customerName}</h4>
-                    <p className="customer-email">{item.customerEmail}</p>
+                    <p className="customer-email">{item.email}</p>
                     <p className="feedback-date">
                       <FaCalendarAlt /> {new Date(item.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
-                <div className="rating-section">
-                  <div className="stars">
-                    {renderStars(item.rating)}
-                  </div>
-                  <span className="rating-label">{getRatingLabel(item.rating)}</span>
+                <div className="status-section">
+                  <span className={`status-badge status-${item.status}`}>
+                    {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                  </span>
                 </div>
               </div>
 
               <div className="feedback-content">
-                <div className="product-info">
-                  <strong>Product:</strong> {item.productName}
-                  <span className="order-id">(Order: #{item.orderId})</span>
+                <div className="message-info">
+                  <strong>Subject:</strong> {item.subject || 'Contact Form Message'}
                 </div>
                 <div className="comment">
-                  <p>{item.comment}</p>
+                  <p>{item.message}</p>
                 </div>
               </div>
 

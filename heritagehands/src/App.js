@@ -20,6 +20,9 @@ import VendorDashboard from './components/VendorDashboard/VendorDashboard';
 import UserDashboard from './components/Dashboard/UserDashboard';
 import Checkout from './components/Checkout/Checkout';
 import OrdersPage from './components/Order/OrdersPage';
+import NotFound from './components/NotFound';
+import OrderSummary from './components/Order/OrderSummary';
+import OrderDetail from './components/Order/OrderDetail';
 
 import { CartProvider } from './context/CartContext';
 
@@ -55,6 +58,7 @@ function AppRoutes() {
         <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/vendorlog" element={<VendorLog />} />
         <Route path="/vendorreg" element={<VendorReg />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     );
   }
@@ -74,6 +78,9 @@ function AppRoutes() {
       <Route path="/userdashboard" element={<UserDashboard />} />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/orders" element={<OrdersPage />} />
+      <Route path="/orders/:orderId" element={<OrderDetail />} />
+      <Route path="/order-summary" element={<OrderSummary />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

@@ -62,6 +62,7 @@ const styles = {
     fontSize: '1.25rem',
     fontWeight: '600',
     marginBottom: '1rem',
+    color: 'white',
   },
   text: {
     color: '#d1d5db',

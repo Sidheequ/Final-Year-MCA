@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useCart } from '../../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { createOrder } from '../../services/orderServices';
+import { getOrderDetails } from '../../services/orderServices';
 import { toast } from 'react-toastify';
 import './Checkout.css';
 
@@ -133,10 +134,17 @@ function Checkout() {
         };
 
         try {
-            await createOrder(orderData);
+            const response = await createOrder(orderData);
             toast.success('Order placed successfully!');
             clearCart();
-            navigate('/userdashboard');
+            // Fetch full order details with populated product info
+            const orderId = response.data?.order?._id || response.data?._id;
+            if (orderId) {
+                const populatedOrder = await getOrderDetails(orderId);
+                navigate('/order-summary', { state: { order: populatedOrder } });
+            } else {
+                navigate('/order-summary', { state: { order: response.data?.order || response.data } });
+            }
         } catch (error) {
             toast.error(error.response?.data?.error || 'Failed to place order.');
         } finally {

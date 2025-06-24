@@ -9,12 +9,12 @@ const UserNavbar = ({ user, onLogout }) => {
         <h2>Welcome, {user?.name || 'User'}!</h2>
         <p>Manage your account and track your orders</p>
       </div>
-      <div className="navbar-actions ">
+      {/* <div className="navbar-actions ">
         <button className="logout-btn" onClick={onLogout}>
           <FaSignOutAlt />
           <span className=''>Logout</span>
         </button>
-      </div>
+      </div> */}
     </header>
   );
 };

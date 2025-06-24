@@ -16,12 +16,12 @@
 }
 
 .map {
-    filter: grayscale(1) contrast(1.2) opacity(0.4);
+    filter: grayscale(0) contrast(1.2) opacity(1);
 }
 
 .contact-info {
     position: absolute;
-    top: 50%;
+    top: 90%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #ffffff;

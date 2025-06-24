@@ -1,5 +1,5 @@
 const express = require('express');
-const { createOrder, getOrderStats, getUserOrders } = require('../../Controllers/orderController');
+const { createOrder, getOrderStats, getUserOrders, getOrderDetails } = require('../../Controllers/orderController');
 const authUser = require('../../middleware/authUser');
 
 const orderRouter = express.Router();
@@ -18,5 +18,10 @@ orderRouter.get('/stats', authUser, getOrderStats);
 // @desc    Get all orders for the logged-in user
 // @access  Private
 orderRouter.get('/', authUser, getUserOrders);
+
+// @route   GET /api/v1/orders/:orderId
+// @desc    Get a single order by ID for the logged-in user
+// @access  Private
+orderRouter.get('/:orderId', authUser, getOrderDetails);
 
 module.exports = orderRouter; 

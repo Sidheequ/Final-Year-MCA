@@ -1,0 +1,69 @@
+.order-summary-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  text-align: center;
+}
+.order-summary-details {
+  margin-top: 1.5rem;
+  text-align: left;
+}
+.order-summary-details ul {
+  list-style: disc;
+  margin-left: 1.5rem;
+}
+.order-summary-container h1 {
+  color: #27ae60;
+}
+.order-summary-container button {
+  margin-top: 2rem;
+  padding: 0.7rem 2rem;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.order-summary-container button:hover {
+  background: #217dbb;
+}
+.order-summary-items-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+}
+.order-summary-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  background: #f8f8f8;
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+}
+.order-summary-item-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-right: 1rem;
+  border: 1px solid #eee;
+}
+.order-summary-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.order-summary-item-name {
+  font-weight: bold;
+  margin-bottom: 0.2rem;
+}
+.order-summary-item-desc {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}

@@ -133,7 +133,7 @@ export const deleteVendor = async (vendorId) => {
 // Get All Feedback (Admin)
 export const getAllFeedback = async () => {
     try {
-        const response = await axiosInstance.get('/admin/feedback');
+        const response = await axiosInstance.get('/feedback/admin/feedback');
         return response;
     } catch (error) {
         throw error;
@@ -143,7 +143,7 @@ export const getAllFeedback = async () => {
 // Reply to Feedback (Admin)
 export const replyToFeedback = async (feedbackId, replyData) => {
     try {
-        const response = await axiosInstance.post(`/admin/feedback/${feedbackId}/reply`, replyData);
+        const response = await axiosInstance.post(`/feedback/admin/feedback/${feedbackId}/reply`, replyData);
         return response;
     } catch (error) {
         throw error;
@@ -153,7 +153,7 @@ export const replyToFeedback = async (feedbackId, replyData) => {
 // Delete Feedback (Admin)
 export const deleteFeedback = async (feedbackId) => {
     try {
-        const response = await axiosInstance.delete(`/admin/feedback/${feedbackId}`);
+        const response = await axiosInstance.delete(`/feedback/admin/feedback/${feedbackId}`);
         return response;
     } catch (error) {
         throw error;
@@ -163,7 +163,7 @@ export const deleteFeedback = async (feedbackId) => {
 // Get Feedback Statistics (Admin)
 export const getFeedbackStats = async () => {
     try {
-        const response = await axiosInstance.get('/admin/feedback/stats');
+        const response = await axiosInstance.get('/feedback/admin/feedback/stats');
         return response;
     } catch (error) {
         throw error;

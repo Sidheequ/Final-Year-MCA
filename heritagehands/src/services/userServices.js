@@ -122,7 +122,7 @@ export const getUserProfile = async () => {
 // Get user order statistics
 export const getOrderStats = async () => {
     try {
-        const response = await axiosInstance.get('/order/stats');
+        const response = await axiosInstance.get('/orders/stats');
         return response;
     } catch (error) {
         console.error('Get order stats error:', error);
@@ -133,7 +133,7 @@ export const getOrderStats = async () => {
 // Get all orders for a user
 export const getUserOrders = async () => {
     try {
-        const response = await axiosInstance.get('/order');
+        const response = await axiosInstance.get('/orders');
         return response;
     } catch (error) {
         console.error('Get user orders error:', error);
@@ -148,6 +148,17 @@ export const updateUserAddress = async (addressData) => {
         return response;
     } catch (error) {
         console.error('Update user address error:', error);
+        throw error;
+    }
+};
+
+// Submit feedback (Contact form)
+export const submitFeedback = async (feedbackData) => {
+    try {
+        const response = await axiosInstance.post('/feedback', feedbackData);
+        return response;
+    } catch (error) {
+        console.error('Submit feedback error:', error);
         throw error;
     }
 };
