@@ -100,6 +100,12 @@ function Checkout() {
             toast.error('Please enter expiry date in MM/YY format');
             return false;
         }
+        // Ensure month is between 01 and 12
+        const [month, year] = expiryDate.split('/');
+        if (parseInt(month, 10) < 1 || parseInt(month, 10) > 12) {
+            toast.error('Expiry month must be between 01 and 12');
+            return false;
+        }
         
         // Basic validation for CVC (3-4 digits)
         if (cvc.length < 3 || cvc.length > 4) {
