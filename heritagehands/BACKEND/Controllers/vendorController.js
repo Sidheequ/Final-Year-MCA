@@ -242,6 +242,18 @@ const getVendorSalesReport = async (req, res) => {
         const vendorId = req.vendor;
         const { startDate, endDate, page = 1, limit = 20 } = req.query;
 
+        // Date validation
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+                return res.status(400).json({ error: 'Invalid date range' });
+            }
+            if (start > end) {
+                return res.status(400).json({ error: 'Start date cannot be after end date' });
+            }
+        }
+
         // Use the new robust aggregation from orders
         const result = await VendorNotificationService.getVendorSalesReportFromOrders(vendorId, {
             startDate,
@@ -252,8 +264,8 @@ const getVendorSalesReport = async (req, res) => {
 
         res.status(200).json(result);
     } catch (error) {
-        console.error('Error getting vendor sales report:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        console.error('Error getting vendor sales report:', error.stack || error);
+        res.status(500).json({ error: error.message || 'Internal server error' });
     }
 };
 

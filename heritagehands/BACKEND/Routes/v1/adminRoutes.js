@@ -18,7 +18,8 @@ const {
     getVendorProductsForAdmin,
     getAdminNotifications,
     getAdminTotalSales,
-    updateOrderStatus
+    updateOrderStatus,
+    getVendorSalesReportAdmin
 } = require('../../Controllers/adminController')
 const authAdmin = require('../../middleware/authAdmin')
 
@@ -75,5 +76,8 @@ adminRouter.get("/vendors/:vendorId/products", authAdmin, getVendorProductsForAd
 adminRouter.get('/notifications', authAdmin, getAdminNotifications);
 // Admin Total Sales (Protected)
 adminRouter.get('/sales/total', authAdmin, getAdminTotalSales);
+
+// Vendor Sales Report for Admin (by vendorId)
+adminRouter.get('/vendor-sales-report', authAdmin, getVendorSalesReportAdmin);
 
 module.exports = adminRouter

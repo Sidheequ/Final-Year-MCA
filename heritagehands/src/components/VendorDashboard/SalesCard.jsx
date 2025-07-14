@@ -16,8 +16,10 @@ const icons = {
 
 const SalesCard = ({ title, value, percent, iconType }) => {
   return (
-    <div className="card sales-card">
-      <div className="title">
+    <>
+   
+     <div className="card sales-card">
+      {/* <div className="title">
         <span>{icons[iconType]}</span>
         <p className="title-text">{title}</p>
         <p className="percent">
@@ -32,8 +34,9 @@ const SalesCard = ({ title, value, percent, iconType }) => {
         <div className="range">
           <div className="fill" style={{ width: percent }}></div>
         </div>
-      </div>
-    </div>
+      </div> */}
+     </div>
+    </>
   );
 };
 

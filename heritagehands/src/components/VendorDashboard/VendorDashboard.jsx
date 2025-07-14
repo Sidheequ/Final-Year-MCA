@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './VendorDashboard.css';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getVendorSalesReport, exportSalesReport, createVendorProduct, getVendorProducts, updateVendorProduct, deleteVendorProduct } from '../../services/vendorServices';
+import { getVendorSalesReport, exportSalesReport, createVendorProduct, getVendorProducts, updateVendorProduct, deleteVendorProduct, getVendorDashboardStats } from '../../services/vendorServices';
 import SalesCard from './SalesCard';
 import VendorNotificationBadge from './VendorNotificationBadge';
 import io from 'socket.io-client';
@@ -29,6 +29,7 @@ function VendorDashboard() {
   });
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [dashboardStats, setDashboardStats] = useState(null);
 
   const vendorData = useSelector((state) => state.vendor.vendor);
   const navigate = useNavigate();
@@ -162,9 +163,41 @@ function VendorDashboard() {
     }
   };
 
+  // Fetch vendor dashboard stats as fallback
+  const fetchDashboardStats = async () => {
+    try {
+      const stats = await getVendorDashboardStats();
+      setDashboardStats(stats);
+    } catch (err) {
+      // Optionally handle error
+    }
+  };
+
+  // Fetch dashboard stats on mount
+  useEffect(() => {
+    if (!vendorData || Object.keys(vendorData).length === 0) return;
+    fetchDashboardStats();
+    // eslint-disable-next-line
+  }, [vendorData]);
+
   const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   const formatAmount = (amount) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(amount);
   const formatPercentage = (value) => `${value}%`;
+
+  // Add a basic button style
+  const buttonStyle = {
+    background: '#2563eb',
+    color: 'white',
+    border: 'none',
+    borderRadius: 6,
+    padding: '8px 16px',
+    fontWeight: 500,
+    cursor: 'pointer',
+    transition: 'background 0.2s',
+  };
+  const buttonHoverStyle = {
+    background: '#1e40af',
+  };
 
   return (
     <div className="vendor-dashboard">
@@ -175,11 +208,25 @@ function VendorDashboard() {
         </div>
         <div className="vendor-actions">
           <VendorNotificationBadge onSalesRefresh={fetchSalesReport} />
-          <button className="btn btn-primary" onClick={() => setShowAddForm(true)}>
+          <button style={buttonStyle} onClick={() => setShowAddForm(true)}>
             Add Product
           </button>
         </div>
       </header>
+
+      {/* Fallback: Show total sales and total orders if sales report is empty or errored */}
+      {((sales.length === 0 && !loading) || error) && dashboardStats && (
+        <div className="dashboard-fallback-summary" style={{ display: 'flex', gap: '2rem', margin: '2rem 0', justifyContent: 'center' }}>
+          <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: 12, minWidth: 180, textAlign: 'center', border: '1px solid #e2e8f0' }}>
+            <h3 style={{ margin: 0, color: '#64748b', fontWeight: 500, fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Sales</h3>
+            <p style={{ fontSize: '2rem', fontWeight: 700, color: '#059669', margin: 0 }}>{dashboardStats.vendor?.totalSales?.toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) || 0}</p>
+          </div>
+          <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: 12, minWidth: 180, textAlign: 'center', border: '1px solid #e2e8f0' }}>
+            <h3 style={{ margin: 0, color: '#64748b', fontWeight: 500, fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Orders</h3>
+            <p style={{ fontSize: '2rem', fontWeight: 700, color: '#1f2937', margin: 0 }}>{dashboardStats.vendor?.totalOrders || 0}</p>
+          </div>
+        </div>
+      )}
 
       {showAddForm && (
         <div className="product-form-overlay">
@@ -219,8 +266,8 @@ function VendorDashboard() {
                 <input type="file" name="image" onChange={handleInputChange} accept="image/*" required={!editingProduct} />
               </div>
               <div className="form-actions">
-                <button type="submit" className="btn btn-primary">{editingProduct ? 'Update Product' : 'Add Product'}</button>
-                <button type="button" className="btn btn-secondary" onClick={() => { setShowAddForm(false); setEditingProduct(null); setFormData({ title: '', description: '', category: '', price: '', quantity: '', image: null }); }}>Cancel</button>
+                <button type="submit" style={buttonStyle}>{editingProduct ? 'Update Product' : 'Add Product'}</button>
+                <button type="button" style={{ ...buttonStyle, background: '#6b7280' }} onClick={() => { setShowAddForm(false); setEditingProduct(null); setFormData({ title: '', description: '', category: '', price: '', quantity: '', image: null }); }}>Cancel</button>
               </div>
             </form>
           </div>
@@ -245,146 +292,13 @@ function VendorDashboard() {
                   <p className="quantity" style={{ marginTop: '0', marginBottom: '0' }}>Quantity: {product.quantity}</p>
                 </div>
                 <div className="product-actions" style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', marginTop: '0' }}>
-                  <button className="btn btn-small btn-primary" onClick={() => handleEdit(product)}>Edit</button>
-                  <button className="btn btn-small btn-danger" onClick={() => handleDelete(product._id)}>Delete</button>
+                  <button style={buttonStyle} onClick={() => handleEdit(product)}>Edit</button>
+                  <button style={{ ...buttonStyle, background: '#ef4444' }} onClick={() => handleDelete(product._id)}>Delete</button>
                 </div>
               </div>
             ))}
           </div>
         )}
-      </div>
-
-      <div className="dashboard-content">
-        <div className="sales-cards-row" style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
-          <SalesCard title="Total Sales" value={formatAmount(summary.totalSales || 0)} percent={summary.totalSales > 0 ? '100%' : '0%'} iconType="sales" />
-          <SalesCard title="Total Earnings" value={formatAmount(summary.totalEarnings || 0)} percent={summary.totalEarnings > 0 ? '100%' : '0%'} iconType="revenue" />
-        </div>
-
-        <div className="vendor-sales-report" style={{ background: 'white', borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.1)', padding: 24, marginBottom: 32 }}>
-          <div className="sales-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
-            <h2 style={{ margin: 0 }}>Sales Report</h2>
-            <div className="sales-filters" style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-              <input
-                type="date"
-                value={filters.startDate}
-                onChange={e => setFilters(prev => ({ ...prev, startDate: e.target.value }))}
-                placeholder="Start Date"
-                style={{ padding: 8, borderRadius: 6, border: '1px solid #d1d5db' }}
-              />
-              <input
-                type="date"
-                value={filters.endDate}
-                onChange={e => setFilters(prev => ({ ...prev, endDate: e.target.value }))}
-                placeholder="End Date"
-                style={{ padding: 8, borderRadius: 6, border: '1px solid #d1d5db' }}
-              />
-              <button onClick={fetchSalesReport} className="btn btn-small btn-primary" title="Refresh">
-                <FaSyncAlt /> Refresh
-              </button>
-              <button onClick={handleExport} className="btn btn-small export-btn" title="Export CSV">
-                <FaFileExport /> Export
-              </button>
-            </div>
-          </div>
-
-          {error && <div className="error-message">{error}</div>}
-
-          {/* Summary Row */}
-          <div className="sales-summary" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, margin: '24px 0 12px 0', background: '#f8fafc', borderRadius: 8, padding: 16, border: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 1 }}>
-            <div className="summary-card" title="Total sales value of delivered/shipped orders">
-              <h3>Total Sales <FaInfoCircle style={{ fontSize: 12, color: '#888' }} /></h3>
-              <p className="summary-value"><FaRupeeSign style={{ verticalAlign: 'middle' }} />{(summary.totalSales || 0).toLocaleString('en-IN')}</p>
-            </div>
-            <div className="summary-card" title="Total earnings after commission">
-              <h3>Total Earnings <FaInfoCircle style={{ fontSize: 12, color: '#888' }} /></h3>
-              <p className="summary-value earnings"><FaRupeeSign style={{ verticalAlign: 'middle' }} />{(summary.totalEarnings || 0).toLocaleString('en-IN')}</p>
-            </div>
-            <div className="summary-card" title="Number of delivered/shipped orders">
-              <h3>Total Orders <FaInfoCircle style={{ fontSize: 12, color: '#888' }} /></h3>
-              <p className="summary-value">{summary.totalOrders || 0}</p>
-            </div>
-            <div className="summary-card" title="Total commission paid to platform">
-              <h3>Commission Paid <FaInfoCircle style={{ fontSize: 12, color: '#888' }} /></h3>
-              <p className="summary-value commission"><FaRupeeSign style={{ verticalAlign: 'middle' }} />{(summary.totalCommission || 0).toLocaleString('en-IN')}</p>
-            </div>
-          </div>
-
-          {/* Sales Table */}
-          <div className="sales-table-container" style={{ marginTop: 8 }}>
-            <table className="sales-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Order ID</th>
-                  <th>Product</th>
-                  <th>Customer</th>
-                  <th>Quantity</th>
-                  <th>Unit Price</th>
-                  <th>Total Amount</th>
-                  <th>Available Stock</th>
-                  <th>Sold Stock</th>
-                  <th>Commission</th>
-                  <th>Earnings</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr><td colSpan={12} style={{ textAlign: 'center', padding: 32 }}><span className="loading-spinner" /></td></tr>
-                ) : sales.length === 0 ? (
-                  <tr><td colSpan={12} style={{ textAlign: 'center', padding: 32 }}>No sales data found for the selected period.</td></tr>
-                ) : (
-                  sales.map((sale) => (
-                    <tr key={sale._id}>
-                      <td>{formatDate(sale.orderDate)}</td>
-                      <td className="order-id">{sale.orderId._id}</td>
-                      <td className="product-name">
-                        <div className="product-info">
-                          <span>{sale.productName}</span>
-                        </div>
-                      </td>
-                      <td>{sale.customerName}</td>
-                      <td>{sale.quantity}</td>
-                      <td>{formatAmount(sale.unitPrice)}</td>
-                      <td className="total-amount">{formatAmount(sale.totalAmount)}</td>
-                      <td>{sale.productId && typeof sale.productId.quantity === 'number' ? sale.productId.quantity : 'N/A'}</td>
-                      <td>{sale.productId && typeof sale.productId.sold === 'number' ? sale.productId.sold : 'N/A'}</td>
-                      <td className="commission">{formatPercentage(sale.commission)}</td>
-                      <td className="earnings">{formatAmount(sale.vendorEarnings)}</td>
-                      <td>
-                        <span className={`status ${sale.paymentStatus}`}>
-                          {sale.paymentStatus}
-                        </span>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {totalPages > 1 && (
-            <div className="pagination">
-              <button
-                onClick={() => setPage(prev => Math.max(1, prev - 1))}
-                disabled={page === 1}
-                className="pagination-btn"
-              >
-                Previous
-              </button>
-              <span className="page-info">
-                Page {page} of {totalPages}
-              </span>
-              <button
-                onClick={() => setPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={page === totalPages}
-                className="pagination-btn"
-              >
-                Next
-              </button>
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

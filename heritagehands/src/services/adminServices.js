@@ -240,4 +240,14 @@ export const getVendorProductsForAdmin = async (vendorId) => {
     } catch (error) {
         throw error;
     }
+};
+
+// Fetch admin order notifications (pending orders)
+export const getAdminOrderNotifications = async (params = {}) => {
+    try {
+        const response = await axiosInstance.get('/admin/notifications', { params });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
 }; 

@@ -481,6 +481,38 @@ const updateOrderStatus = async (req, res) => {
     }
 };
 
+// Get sales report for a specific vendor (Admin)
+const getVendorSalesReportAdmin = async (req, res) => {
+    try {
+        const { vendorId, startDate, endDate, page = 1, limit = 20 } = req.query;
+        if (!vendorId) {
+            return res.status(400).json({ error: 'vendorId is required' });
+        }
+        // Date validation
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+                return res.status(400).json({ error: 'Invalid date range' });
+            }
+            if (start > end) {
+                return res.status(400).json({ error: 'Start date cannot be after end date' });
+            }
+        }
+        // Use the same aggregation as vendor sales report
+        const result = await require('../Utilities/vendorNotificationService').getVendorSalesReportFromOrders(vendorId, {
+            startDate,
+            endDate,
+            page: parseInt(page),
+            limit: parseInt(limit)
+        });
+        res.status(200).json(result);
+    } catch (error) {
+        console.error('Error getting vendor sales report (admin):', error.stack || error);
+        res.status(500).json({ error: error.message || 'Internal server error' });
+    }
+};
+
 module.exports={
     register,
     login,
@@ -501,5 +533,6 @@ module.exports={
     getVendorProductsForAdmin,
     getAdminNotifications,
     getAdminTotalSales,
-    updateOrderStatus
+    updateOrderStatus,
+    getVendorSalesReportAdmin
 }

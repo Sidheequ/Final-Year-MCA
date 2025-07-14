@@ -26,6 +26,8 @@ const VendorSalesReport = () => {
                 limit: 20,
                 ...filters
             };
+
+            console.log('Current token:', localStorage.getItem('token'));
             const response = await getVendorSalesReport(params);
             setSales(response.sales);
             setSummary(response.summary);

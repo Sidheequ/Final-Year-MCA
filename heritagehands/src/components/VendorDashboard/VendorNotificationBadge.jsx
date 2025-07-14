@@ -62,9 +62,9 @@ const OrderDetailsModal = ({ orderId, onClose, onStatusChange }) => {
         {order.shippingAddress && (
           <p><strong>Shipping Address:</strong> {order.shippingAddress.address}, {order.shippingAddress.city}, {order.shippingAddress.state}, {order.shippingAddress.postalCode}</p>
         )}
-        <button onClick={() => handleStatusUpdate('Shipped')} style={{ marginRight: 8 }}>Mark as Shipped</button>
-        <button onClick={() => handleStatusUpdate('Delivered')} style={{ marginRight: 8 }}>Mark as Delivered</button>
-        <button onClick={onClose}>Close</button>
+        <button onClick={() => handleStatusUpdate('Shipped')} style={{ marginRight: 8, backgroundColor: '#007bff', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 4, cursor: 'pointer' }}>Mark as Shipped</button>
+        <button onClick={() => handleStatusUpdate('Delivered')} style={{ marginRight: 8, backgroundColor: '#28a745', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 4, cursor: 'pointer' }}>Mark as Delivered</button>
+        <button onClick={onClose} style={{ backgroundColor: '#6c757d', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 4, cursor: 'pointer' }}>Close</button>
       </div>
     </div>
   );
@@ -131,78 +131,39 @@ const VendorNotificationBadge = ({ onSalesRefresh }) => {
     if (orderId) setSelectedOrderId(orderId);
   };
 
+  // Filter for admin-related notifications
+  const adminNotificationTypes = ['admin_product_status', 'product_approved', 'product_rejected'];
+  const adminNotifications = notifications.filter(n => adminNotificationTypes.includes(n.type));
+
   return (
-    <div style={{ position: 'relative', display: 'inline-block' }}>
-    <button
-      onClick={() => setShowDropdown(s => !s)}
-      style={{ fontSize: '1.5em', position: 'relative', background: 'none', border: 'none', cursor: 'pointer' }}
-      aria-label="Notifications"
-    >
-      🔔
-      {unreadCount > 0 && (
-        <span style={{
-          background: 'red',
-          color: 'white',
-          borderRadius: '50%',
-          padding: '2px 7px',
-          fontSize: '0.8em',
-          position: 'absolute',
-          top: '-8px',
-          right: '-8px'
-        }}>
-          {unreadCount}
-        </span>
-      )}
-    </button>
+    <div className="vendor-notification-badge">
+      <button
+        style={{ position: 'relative', background: '#2563eb', color: 'white', border: 'none', borderRadius: 6, padding: '8px 16px', fontWeight: 500, cursor: 'pointer' }}
+        onClick={() => setShowDropdown((prev) => !prev)}
+        title="Admin Notifications"
+      >
+        Admin Notifications
+        {adminNotifications.length > 0 && (
+          <span style={{ position: 'absolute', top: 2, right: 2, background: '#ef4444', color: 'white', borderRadius: '50%', padding: '2px 8px', fontSize: 12, fontWeight: 700 }}>
+            {adminNotifications.length}
+          </span>
+        )}
+      </button>
       {showDropdown && (
-        <div style={{
-          position: 'absolute',
-          right: 0,
-          background: '#fff',
-          border: '1px solid #ccc',
-          width: '350px',
-          zIndex: 1000,
-          maxHeight: '350px',
-          overflowY: 'auto',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-        }}>
-          <button onClick={markAllAsRead} style={{ width: '100%', padding: '8px', background: '#f5f5f5', border: 'none' }}>
-            Mark all as read
-          </button>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-            {loading && <li style={{ padding: '10px' }}>Loading...</li>}
-            {!loading && notifications.length === 0 && <li style={{ padding: '10px' }}>No notifications yet.</li>}
-            {notifications.map((notif, idx) => (
-              <li key={notif._id || idx} style={{
-                padding: '10px',
-                background: notif.isRead ? '#f9f9f9' : '#e6f7ff',
-                borderBottom: '1px solid #eee',
-                cursor: notif.orderId ? 'pointer' : 'default'
-              }}
-                onClick={() => handleNotificationClick(notif)}
-              >
-                <strong>{notif.title}</strong><br />
-                {notif.message}<br />
-                {notif.productId && (
-                  <span>
-                    Product: {typeof notif.productId === 'object'
-                      ? notif.productId.title || notif.productId._id
-                      : notif.productId}
-                  </span>
-                )}<br />
-                {notif.amount && <span>Amount: ₹{notif.amount}</span>}<br />
-                {notif.quantity && <span>Quantity: {notif.quantity}</span>}<br />
-                {notif.orderId && (
-                  <span>
-                    Order ID: {typeof notif.orderId === 'object'
-                      ? notif.orderId._id
-                      : notif.orderId}
-                  </span>
-                )}<br />
-                <span style={{ fontSize: '0.8em', color: '#888' }}>{new Date(notif.createdAt).toLocaleString()}</span>
-              </li>
-            ))}
-          </ul>
+        <div className="notification-dropdown" style={{ position: 'absolute', top: '110%', right: 0, background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', borderRadius: 8, minWidth: 280, zIndex: 100 }}>
+          <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #e5e7eb', fontWeight: 600 }}>Admin Product Notifications</div>
+          {adminNotifications.length === 0 ? (
+            <div style={{ padding: '1rem', color: '#6b7280', textAlign: 'center' }}>No admin notifications.</div>
+          ) : (
+            adminNotifications.map((notif) => (
+              <div key={notif._id} style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #f3f4f6' }}>
+                <div style={{ fontWeight: 600 }}>{notif.title}</div>
+                <div style={{ fontSize: 14 }}>{notif.message}</div>
+                {notif.status && <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>Status: {notif.status}</div>}
+                <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>{new Date(notif.createdAt).toLocaleString()}</div>
+              </div>
+            ))
+          )}
         </div>
       )}
       {selectedOrderId && (
