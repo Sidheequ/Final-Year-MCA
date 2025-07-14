@@ -4,7 +4,9 @@ const User = require('../Models/userModel');
 // Submit feedback (Contact form)
 const submitFeedback = async (req, res) => {
     try {
+        // Accept feedback from either user or vendor
         const userId = req.user;
+        const vendorId = req.vendor;
         const { customerName, email, message, subject } = req.body;
 
         // Validation
@@ -14,7 +16,8 @@ const submitFeedback = async (req, res) => {
 
         // Create new feedback
         const newFeedback = new Feedback({
-            userId,
+            userId: userId || undefined,
+            vendorId: vendorId || undefined,
             customerName,
             email,
             message,

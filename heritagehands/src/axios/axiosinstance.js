@@ -14,7 +14,10 @@ const axiosinstance = axios.create({
 // Request interceptor
 axiosinstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    // Prefer vendor token if present, otherwise use user token
+    const vendorToken = localStorage.getItem('vendorToken');
+    const userToken = localStorage.getItem('token');
+    const token = vendorToken || userToken;
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }

@@ -8,13 +8,14 @@ const {
 } = require('../../Controllers/feedbackController');
 const authUser = require('../../middleware/authUser');
 const authAdmin = require('../../middleware/authAdmin');
+const authVendor = require('../../middleware/authVendor');
 
 const feedbackRouter = express.Router();
 
 // @route   POST /api/v1/feedback
-// @desc    Submit feedback (Contact form) - User only
+// @desc    Submit feedback (Contact form) - User or Vendor
 // @access  Private
-feedbackRouter.post('/', authUser, submitFeedback);
+feedbackRouter.post('/', [authUser, authVendor], submitFeedback);
 
 // @route   GET /api/v1/admin/feedback
 // @desc    Get all feedback - Admin only

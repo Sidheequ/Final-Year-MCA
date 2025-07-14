@@ -137,7 +137,7 @@ const VendorNotificationBadge = ({ onSalesRefresh }) => {
 
   return (
     <div className="vendor-notification-badge">
-      <button
+      {/* <button
         style={{ position: 'relative', background: '#2563eb', color: 'white', border: 'none', borderRadius: 6, padding: '8px 16px', fontWeight: 500, cursor: 'pointer' }}
         onClick={() => setShowDropdown((prev) => !prev)}
         title="Admin Notifications"
@@ -148,7 +148,7 @@ const VendorNotificationBadge = ({ onSalesRefresh }) => {
             {adminNotifications.length}
           </span>
         )}
-      </button>
+      </button> */}
       {showDropdown && (
         <div className="notification-dropdown" style={{ position: 'absolute', top: '110%', right: 0, background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', borderRadius: 8, minWidth: 280, zIndex: 100 }}>
           <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #e5e7eb', fontWeight: 600 }}>Admin Product Notifications</div>
