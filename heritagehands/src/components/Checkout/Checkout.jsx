@@ -100,6 +100,20 @@ function Checkout() {
             toast.error('Please enter expiry date in MM/YY format');
             return false;
         }
+        // Validate month is between 01 and 12
+        const [expMonth, expYear] = expiryDate.split('/').map(Number);
+        if (expMonth < 1 || expMonth > 12) {
+            toast.error('Expiry month must be between 01 and 12');
+            return false;
+        }
+        // Validate expiry is not in the past
+        const now = new Date();
+        const currentYear = now.getFullYear() % 100; // last two digits
+        const currentMonth = now.getMonth() + 1;
+        if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
+            toast.error('Card expiry date is in the past');
+            return false;
+        }
         
         // Basic validation for CVC (3-4 digits)
         if (cvc.length < 3 || cvc.length > 4) {
