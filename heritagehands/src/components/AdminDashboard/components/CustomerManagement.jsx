@@ -98,12 +98,12 @@ const CustomerManagement = () => {
                 )}
               </div>
               <div className="customer-actions">
-                <button 
+                {/* <button 
                   className="admin-btn admin-btn-secondary"
                   onClick={() => toast.info('View customer details functionality will be implemented')}
                 >
                   View Details
-                </button>
+                </button> */}
                 <button 
                   className="admin-btn admin-btn-danger"
                   onClick={() => handleDelete(customer._id)}

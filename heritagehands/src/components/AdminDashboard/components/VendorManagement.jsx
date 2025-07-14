@@ -8,7 +8,7 @@ const VendorManagement = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
-  const [selectedVendor, setSelectedVendor] = useState(null);
+  // const [selectedVendor, setSelectedVendor] = useState(null);
   const [vendorDetailsModal, setVendorDetailsModal] = useState(false);
   const [vendorDetails, setVendorDetails] = useState(null);
   const [vendorProducts, setVendorProducts] = useState([]);
@@ -119,12 +119,12 @@ const VendorManagement = () => {
     if (vendor.isApproved) {
       return (
         <div className="action-buttons">
-          <button 
+          {/* <button 
             className="admin-btn admin-btn-secondary"
             onClick={() => handleView(vendor)}
           >
             <FaEye /> View
-          </button>
+          </button> */}
           <button 
             className="admin-btn admin-btn-danger"
             onClick={() => handleDelete(vendor._id)}
