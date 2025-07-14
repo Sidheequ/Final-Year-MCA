@@ -13,8 +13,10 @@ const {
     getVendorSalesReport,
     getVendorDashboardStats,
     updateNotificationPreferences,
-    exportSalesReport
+    exportSalesReport,
+    updateVendorOrderStatus
 } = require('../../Controllers/vendorController');
+const { getOrderDetailsForVendor } = require('../../Controllers/orderController');
 const authVendor = require('../../middleware/authVendor');
 const upload = require('../../middleware/multer');
 const { getVendorReviews } = require('../../Controllers/reviewController');
@@ -41,6 +43,12 @@ router.get('/sales-report/export', authVendor, exportSalesReport);
 // Vendor Dashboard Routes (Protected)
 router.get('/dashboard-stats', authVendor, getVendorDashboardStats);
 router.put('/notification-preferences', authVendor, updateNotificationPreferences);
+
+// Vendor Order Status Update
+router.patch('/orders/:orderId/status', authVendor, updateVendorOrderStatus);
+
+// Vendor Order Details
+router.get('/orders/:orderId', authVendor, getOrderDetailsForVendor);
 
 // Vendor reviews
 router.get('/:vendorId/reviews', getVendorReviews);

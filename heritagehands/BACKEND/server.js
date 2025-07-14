@@ -12,6 +12,21 @@ const orderRoutes = require('./Routes/orders');
 
 const app = express();
 
+// --- Socket.io setup ---
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require('socket.io');
+const io = new Server(server, {
+  cors: {
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    credentials: true,
+  },
+});
+app.set('io', io); // Make io available in req.app
+
+// Connect io to vendorNotificationService
+require('./Utilities/vendorNotificationService').setSocketIo(io);
+
 // Enhanced CORS configuration
 app.use(cors({
   origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
@@ -30,8 +45,8 @@ app.use((err, req, res, next) => {
 });
 
 // Routes
-app.use('/api/orders', orderRoutes);
-app.use('/api', apiRouter); 
+// app.use('/api/orders', orderRoutes);
+app.use('/api/v1', apiRouter); 
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/heritagehands';
@@ -44,7 +59,7 @@ console.log('NODE_ENV:', process.env.NODE_ENV);
 mongoose.connect(MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB successfully');
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => {
     console.error('MongoDB connection error:', err);

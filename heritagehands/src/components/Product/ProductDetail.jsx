@@ -59,6 +59,11 @@ function ProductDetail() {
         <div className="product-info-details">
           <h3 className="product-title-detail">{product.title}</h3>
           <p className="product-category-detail">{product.category}</p>
+          {product.vendorId && (
+            <p className="product-vendor-detail">
+              <strong>Vendor:</strong> {product.vendorId.shopName || product.vendorId.name}
+            </p>
+          )}
           <p className="product-description-detail">{product.description}</p>
           <div className="price-container-detail">
             <span className="product-price-detail">₹{totalPrice.toFixed(2)}</span>

@@ -51,6 +51,17 @@ const createOrder = async (req, res) => {
 
         await newOrder.save();
 
+        // Update product stock and sold count
+        const Product = require('../Models/productModel');
+        for (const item of products) {
+          await Product.findByIdAndUpdate(
+            item.productId,
+            {
+              $inc: { quantity: -item.quantity, sold: item.quantity }
+            }
+          );
+        }
+
         // Get user details for vendor notifications
         const user = await User.findById(userId).select('name email');
 
@@ -153,6 +164,23 @@ const getOrderDetails = async (req, res) => {
     }
 };
 
+// Vendor-friendly getOrderDetails (no userId check)
+const getOrderDetailsForVendor = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const order = await Order.findById(orderId)
+            .populate('products.productId', 'title image price vendorId')
+            .populate('products.productId.vendorId', 'name shopName');
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+        res.status(200).json(order);
+    } catch (error) {
+        console.error('Error getting order details for vendor:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 // New function to cancel order (with vendor notification)
 const cancelOrder = async (req, res) => {
     try {
@@ -197,5 +225,6 @@ module.exports = {
     getOrderStats, 
     getUserOrders, 
     getOrderDetails, 
+    getOrderDetailsForVendor,
     cancelOrder 
 }; 

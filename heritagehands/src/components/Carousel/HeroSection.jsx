@@ -12,7 +12,7 @@ function HeroSection() {
           <div className="hero-text">
             <h1>Celebrate Craftsmanship, Shop Handcrafted Treasures</h1>
             <p>Discover unique, artisan-made products crafted with passion, tradition, and care—bringing timeless beauty to your everyday life.</p>
-            <a href="#" className="shop-button">Shop Collection</a>
+            {/* <a href="#" className="shop-button">Shop Collection</a> */}
           </div>
           <div className="hero-images">
             <div className="image-grid">

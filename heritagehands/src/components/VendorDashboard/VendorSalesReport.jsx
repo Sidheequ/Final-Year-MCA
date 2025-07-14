@@ -180,6 +180,8 @@ const VendorSalesReport = () => {
                             <th>Quantity</th>
                             <th>Unit Price</th>
                             <th>Total Amount</th>
+                            <th>Available Stock</th>
+                            <th>Sold Stock</th>
                             <th>Commission</th>
                             <th>Earnings</th>
                             <th>Status</th>
@@ -199,6 +201,8 @@ const VendorSalesReport = () => {
                                 <td>{sale.quantity}</td>
                                 <td>{formatAmount(sale.unitPrice)}</td>
                                 <td className="total-amount">{formatAmount(sale.totalAmount)}</td>
+                                <td>{sale.productId && typeof sale.productId.quantity === 'number' ? sale.productId.quantity : 'N/A'}</td>
+                                <td>{sale.productId && typeof sale.productId.sold === 'number' ? sale.productId.sold : 'N/A'}</td>
                                 <td className="commission">{formatPercentage(sale.commission)}</td>
                                 <td className="earnings">{formatAmount(sale.vendorEarnings)}</td>
                                 <td>

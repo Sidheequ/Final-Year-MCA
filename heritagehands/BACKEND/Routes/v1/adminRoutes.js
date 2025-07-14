@@ -15,7 +15,10 @@ const {
     updateProduct,
     deleteProduct,
     getVendorDetails,
-    getVendorProductsForAdmin
+    getVendorProductsForAdmin,
+    getAdminNotifications,
+    getAdminTotalSales,
+    updateOrderStatus
 } = require('../../Controllers/adminController')
 const authAdmin = require('../../middleware/authAdmin')
 
@@ -54,6 +57,9 @@ adminRouter.get("/customers", authAdmin, getAllCustomers)
 // Order Management Routes (Protected)
 adminRouter.get("/orders", authAdmin, getAllOrders)
 
+// Update order status (Admin)
+adminRouter.patch('/orders/:orderId/status', authAdmin, updateOrderStatus);
+
 // Analytics Routes (Protected)
 adminRouter.get("/analytics", authAdmin, getSalesAnalytics)
 
@@ -64,5 +70,10 @@ adminRouter.put("/vendors/:vendorId/reject", authAdmin, rejectVendor)
 adminRouter.delete("/vendors/:vendorId", authAdmin, deleteVendor)
 adminRouter.get("/vendors/:vendorId", authAdmin, getVendorDetails)
 adminRouter.get("/vendors/:vendorId/products", authAdmin, getVendorProductsForAdmin)
+
+// Admin Notifications (Protected)
+adminRouter.get('/notifications', authAdmin, getAdminNotifications);
+// Admin Total Sales (Protected)
+adminRouter.get('/sales/total', authAdmin, getAdminTotalSales);
 
 module.exports = adminRouter

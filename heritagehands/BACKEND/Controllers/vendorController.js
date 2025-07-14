@@ -242,7 +242,8 @@ const getVendorSalesReport = async (req, res) => {
         const vendorId = req.vendor;
         const { startDate, endDate, page = 1, limit = 20 } = req.query;
 
-        const result = await VendorNotificationService.getVendorSalesReport(vendorId, {
+        // Use the new robust aggregation from orders
+        const result = await VendorNotificationService.getVendorSalesReportFromOrders(vendorId, {
             startDate,
             endDate,
             page: parseInt(page),
@@ -384,6 +385,69 @@ const generateSalesCSV = (sales) => {
     return [headers, ...rows].map(row => row.join(',')).join('\n');
 };
 
+// Update order status (Vendor)
+const updateVendorOrderStatus = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const { orderStatus } = req.body;
+        const validStatuses = ['Shipped', 'Delivered'];
+        if (!validStatuses.includes(orderStatus)) {
+            return res.status(400).json({ error: 'Invalid order status' });
+        }
+        const Order = require('../Models/orderModel');
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+        // Check if the vendor owns at least one product in the order
+        const Product = require('../Models/productModel');
+        const vendorId = req.vendor;
+        let debugLog = [];
+        let ownsProduct = false;
+        for (const item of order.products) {
+            const product = await Product.findById(item.productId);
+            debugLog.push({
+                productId: item.productId,
+                productVendorId: product ? product.vendorId : null,
+                vendorId,
+                equals: product && product.vendorId ? product.vendorId.equals(vendorId) : false
+            });
+            if (product && product.vendorId && product.vendorId.equals(vendorId)) {
+                ownsProduct = true;
+                break;
+            }
+        }
+        if (!ownsProduct) {
+            return res.status(403).json({ error: 'You do not have permission to update this order', debug: debugLog });
+        }
+        order.orderStatus = orderStatus;
+        await order.save();
+
+        // Update related SalesReport entries if order is now Delivered or Shipped
+        if (['Delivered', 'Shipped'].includes(orderStatus)) {
+            const SalesReport = require('../Models/salesReportModel');
+            const updateResult = await SalesReport.updateMany(
+                { orderId: order._id },
+                { $set: { paymentStatus: 'completed' } }
+            );
+            console.log('Updated SalesReport entries for order', order._id, 'matched:', updateResult.matchedCount, 'modified:', updateResult.modifiedCount);
+        }
+
+        // Emit real-time event to admins for sales update
+        const io = req.app && req.app.get ? req.app.get('io') : null;
+        if (io) {
+            io.emit('admin_sales_update', { orderId: order._id, newStatus: order.orderStatus });
+            // Emit to vendor room for real-time dashboard update
+            console.log('Emitting vendor_sales_update to room:', `vendor_${vendorId}`, 'for vendorId:', vendorId);
+            io.to(`vendor_${vendorId}`).emit('vendor_sales_update', { orderId: order._id, newStatus: order.orderStatus });
+        }
+        res.status(200).json({ message: 'Order status updated', order });
+    } catch (error) {
+        console.error('Error updating vendor order status:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 module.exports = {
     register,
     login,
@@ -397,5 +461,6 @@ module.exports = {
     getVendorSalesReport,
     getVendorDashboardStats,
     updateNotificationPreferences,
-    exportSalesReport
+    exportSalesReport,
+    updateVendorOrderStatus
 } 

@@ -25,6 +25,7 @@ import OrderSummary from './components/Order/OrderSummary';
 import OrderDetail from './components/Order/OrderDetail';
 
 import { CartProvider } from './context/CartContext';
+import { useSelector } from 'react-redux';
 
 function App() {
   return (
@@ -42,28 +43,31 @@ function App() {
 
 function AppRoutes() {
   const location = useLocation();
-  const adminVendorRoutes = [
-    '/admin', '/adminDashboard', '/admindashboard', '/vendordashboard', '/adminlogin', '/vendorlog', '/vendorreg'
-  ];
-  const isAdminOrVendor = adminVendorRoutes.includes(location.pathname);
+  const admin = useSelector((state) => state.admin.admin);
+  const vendor = useSelector((state) => state.vendor.vendor);
 
-  if (isAdminOrVendor) {
-    // Admin/Vendor dashboards: CartProvider is present globally
+  const isAdminOrVendorLoggedIn = (admin && Object.keys(admin).length > 0) || (vendor && Object.keys(vendor).length > 0);
+
+  const adminVendorRoutes = [
+    '/admin', '/adminDashboard', '/admindashboard', '/vendordashboard'
+  ];
+  const isAdminOrVendorPath = adminVendorRoutes.includes(location.pathname);
+
+  // Only show admin/vendor routes if logged in as admin or vendor
+  if (isAdminOrVendorLoggedIn && isAdminOrVendorPath) {
     return (
       <Routes>
+        <Route path="/" element={<Main />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/adminDashboard" element={<AdminDashboard />} />
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/vendordashboard" element={<VendorDashboard />} />
-        <Route path="/adminlogin" element={<AdminLogin />} />
-        <Route path="/vendorlog" element={<VendorLog />} />
-        <Route path="/vendorreg" element={<VendorReg />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     );
   }
 
-  // User-facing pages: CartProvider is present globally
+  // Otherwise, show user-facing routes
   return (
     <Routes>
       <Route path="/" element={<Main />} />
@@ -80,6 +84,9 @@ function AppRoutes() {
       <Route path="/orders" element={<OrdersPage />} />
       <Route path="/orders/:orderId" element={<OrderDetail />} />
       <Route path="/order-summary" element={<OrderSummary />} />
+      <Route path="/adminlogin" element={<AdminLogin />} />
+      <Route path="/vendorlog" element={<VendorLog />} />
+      <Route path="/vendorreg" element={<VendorReg />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

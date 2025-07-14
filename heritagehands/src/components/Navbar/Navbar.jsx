@@ -13,6 +13,7 @@ import { removeAdmin } from '../../redux/features/adminSlice';
 import { FaUserCircle, FaBoxOpen, FaHeart, FaGift, FaStore, FaShoppingCart, FaSignOutAlt, FaUserShield } from 'react-icons/fa';
 import { FcAbout } from 'react-icons/fc';
 import { MdOutlineContactPage } from 'react-icons/md';
+import VendorNotificationBadge from '../VendorDashboard/VendorNotificationBadge'; // Adjust the path if needed
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -136,6 +137,9 @@ const Navbar = () => {
           <Link to="/products" className="nav-link">Products</Link>
         </div>
         <div className="navbar-actions">
+          {/* {isVendorLoggedIn && (
+             <VendorNotificationBadge />
+          )} */}
           <div 
             className="dropdown-container"
             onMouseEnter={() => setDropdownOpen(true)}

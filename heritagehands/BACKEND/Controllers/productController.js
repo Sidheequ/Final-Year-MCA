@@ -51,7 +51,7 @@ const listProduct = async (req, res) => {
 const productDetails = async (req, res) => {
     try {
         const { productId } = req.params;
-        const product = await productDb.findById(productId);
+        const product = await productDb.findById(productId).populate('vendorId', 'name shopName');
 
         if (!product) {
             return res.status(404).json({ message: "Product not found" });

@@ -4,6 +4,16 @@ const Product = require('../Models/productModel');
 const Vendor = require('../Models/vendorModel');
 const User = require('../Models/userModel');
 
+let ioInstance = null;
+
+function setSocketIo(io) {
+    ioInstance = io;
+}
+
+function getSocketIo() {
+    return ioInstance;
+}
+
 class VendorNotificationService {
     /**
      * Process order and update vendor information
@@ -45,6 +55,17 @@ class VendorNotificationService {
                     amount: orderItem.price * orderItem.quantity,
                     quantity: orderItem.quantity
                 });
+
+                // --- Emit real-time event to vendor ---
+                if (ioInstance) {
+                    ioInstance.to(`vendor_${vendor._id}`).emit('vendor_notification', {
+                        notification,
+                        salesUpdate: {
+                            salesAmount: orderItem.price * orderItem.quantity,
+                            earnings: vendorEarnings
+                        }
+                    });
+                }
 
                 // Create sales report entry
                 const salesReport = await this.createSalesReport({
@@ -327,27 +348,98 @@ class VendorNotificationService {
             const { startDate, endDate, page = 1, limit = 20 } = options;
             const skip = (page - 1) * limit;
 
-            let query = { vendorId };
+            let matchStage = { vendorId };
             if (startDate && endDate) {
-                query.orderDate = {
+                matchStage.orderDate = {
                     $gte: new Date(startDate),
                     $lte: new Date(endDate)
                 };
             }
 
-            const sales = await SalesReport.find(query)
-                .sort({ orderDate: -1 })
-                .skip(skip)
-                .limit(limit)
-                .populate('orderId', 'orderStatus')
-                .populate('productId', 'title image')
-                .populate('customerId', 'name email');
+            // Aggregation pipeline to join with Order and filter by orderStatus
+            const pipeline = [
+                { $match: matchStage },
+                {
+                    $lookup: {
+                        from: 'orders',
+                        localField: 'orderId',
+                        foreignField: '_id',
+                        as: 'orderObj'
+                    }
+                },
+                { $unwind: '$orderObj' },
+                {
+                    $match: {
+                        'orderObj.orderStatus': { $in: ['Delivered', 'Shipped'] }
+                    }
+                },
+                {
+                    $sort: { orderDate: -1 }
+                },
+                { $skip: skip },
+                { $limit: limit },
+                // Optionally populate product and customer
+                {
+                    $lookup: {
+                        from: 'products',
+                        localField: 'productId',
+                        foreignField: '_id',
+                        as: 'productObj'
+                    }
+                },
+                { $unwind: { path: '$productObj', preserveNullAndEmptyArrays: true } },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'customerId',
+                        foreignField: '_id',
+                        as: 'customerObj'
+                    }
+                },
+                { $unwind: { path: '$customerObj', preserveNullAndEmptyArrays: true } },
+            ];
 
-            const total = await SalesReport.countDocuments(query);
+            const sales = await SalesReport.aggregate(pipeline);
 
-            // Calculate summary
-            const summary = await SalesReport.aggregate([
-                { $match: query },
+            // For total count (without pagination)
+            const countPipeline = [
+                { $match: matchStage },
+                {
+                    $lookup: {
+                        from: 'orders',
+                        localField: 'orderId',
+                        foreignField: '_id',
+                        as: 'orderObj'
+                    }
+                },
+                { $unwind: '$orderObj' },
+                {
+                    $match: {
+                        'orderObj.orderStatus': { $in: ['Delivered', 'Shipped'] }
+                    }
+                },
+                { $count: 'total' }
+            ];
+            const totalResult = await SalesReport.aggregate(countPipeline);
+            const total = totalResult[0]?.total || 0;
+
+            // For summary
+            const summaryPipeline = [
+                { $match: matchStage },
+                {
+                    $lookup: {
+                        from: 'orders',
+                        localField: 'orderId',
+                        foreignField: '_id',
+                        as: 'orderObj'
+                    }
+                },
+                { $unwind: '$orderObj' },
+                {
+                    $match: {
+                        'orderObj.orderStatus': { $in: ['Delivered', 'Shipped'] }
+                    }
+                },
                 {
                     $group: {
                         _id: null,
@@ -357,22 +449,116 @@ class VendorNotificationService {
                         totalCommission: { $sum: { $multiply: ['$totalAmount', { $divide: ['$commission', 100] }] } }
                     }
                 }
-            ]);
+            ];
+            const summaryResult = await SalesReport.aggregate(summaryPipeline);
+            const summary = summaryResult[0] || {
+                totalSales: 0,
+                totalEarnings: 0,
+                totalOrders: 0,
+                totalCommission: 0
+            };
+
+            // Attach populated fields for compatibility
+            sales.forEach(sale => {
+                if (sale.productObj) sale.productId = sale.productObj;
+                if (sale.customerObj) sale.customerId = sale.customerObj;
+                if (sale.orderObj) sale.orderId = { _id: sale.orderObj._id, orderStatus: sale.orderObj.orderStatus };
+                delete sale.productObj;
+                delete sale.customerObj;
+                delete sale.orderObj;
+            });
 
             return {
                 sales,
                 total,
                 page,
                 totalPages: Math.ceil(total / limit),
-                summary: summary[0] || {
-                    totalSales: 0,
-                    totalEarnings: 0,
-                    totalOrders: 0,
-                    totalCommission: 0
-                }
+                summary
             };
         } catch (error) {
             console.error('Error getting vendor sales report:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get vendor sales report directly from orders collection (robust, always up-to-date)
+     * @param {String} vendorId - Vendor ID
+     * @param {Object} options - Query options
+     */
+    static async getVendorSalesReportFromOrders(vendorId, options = {}) {
+        try {
+            const { startDate, endDate, page = 1, limit = 20 } = options;
+            const skip = (page - 1) * limit;
+            const matchStage = {
+                'products.vendorId': typeof vendorId === 'string' ? require('mongoose').Types.ObjectId(vendorId) : vendorId,
+                orderStatus: { $in: ['Delivered', 'Shipped'] }
+            };
+            if (startDate && endDate) {
+                matchStage.createdAt = {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate)
+                };
+            }
+            const pipeline = [
+                { $match: matchStage },
+                { $unwind: '$products' },
+                { $match: { 'products.vendorId': matchStage['products.vendorId'] } },
+                {
+                    $project: {
+                        orderId: '$_id',
+                        orderDate: '$createdAt',
+                        productId: '$products.productId',
+                        productName: '$products.productName',
+                        quantity: '$products.quantity',
+                        unitPrice: '$products.price',
+                        totalAmount: { $multiply: ['$products.price', '$products.quantity'] },
+                        commission: '$products.commission',
+                        vendorEarnings: '$products.vendorEarnings',
+                        customerId: '$userId',
+                        customerName: '$customerName',
+                        paymentStatus: '$orderStatus',
+                        productStock: '$products.stock',
+                        productSold: '$products.sold'
+                    }
+                },
+                { $sort: { orderDate: -1 } },
+                { $skip: skip },
+                { $limit: limit }
+            ];
+            const Order = require('../Models/orderModel');
+            const sales = await Order.aggregate(pipeline);
+            // Summary
+            const summaryPipeline = [
+                { $match: matchStage },
+                { $unwind: '$products' },
+                { $match: { 'products.vendorId': matchStage['products.vendorId'] } },
+                {
+                    $group: {
+                        _id: null,
+                        totalSales: { $sum: { $multiply: ['$products.price', '$products.quantity'] } },
+                        totalEarnings: { $sum: '$products.vendorEarnings' },
+                        totalOrders: { $sum: 1 },
+                        totalCommission: { $sum: '$products.commission' }
+                    }
+                }
+            ];
+            const summaryResult = await Order.aggregate(summaryPipeline);
+            const summary = summaryResult[0] || {
+                totalSales: 0,
+                totalEarnings: 0,
+                totalOrders: 0,
+                totalCommission: 0
+            };
+            return {
+                sales,
+                total: sales.length,
+                page,
+                totalPages: 1,
+                summary
+            };
+        } catch (error) {
+            console.error('Error getting vendor sales report from orders:', error);
             throw error;
         }
     }
@@ -494,6 +680,10 @@ class VendorNotificationService {
         try {
             const notification = new Notification(notificationData);
             await notification.save();
+            // --- Emit real-time event to admin ---
+            if (ioInstance && notificationData.adminId) {
+                ioInstance.to(`admin_${notificationData.adminId}`).emit('admin_notification', notification);
+            }
             return notification;
         } catch (error) {
             console.error('Error creating admin notification:', error);
@@ -502,4 +692,6 @@ class VendorNotificationService {
     }
 }
 
-module.exports = VendorNotificationService; 
+module.exports = VendorNotificationService;
+module.exports.setSocketIo = setSocketIo;
+module.exports.getSocketIo = getSocketIo; 

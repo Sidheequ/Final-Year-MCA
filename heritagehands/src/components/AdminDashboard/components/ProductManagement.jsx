@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getAllProducts, addProduct, updateProduct, deleteProduct } from '../../../services/adminServices';
 import { toast } from 'react-toastify';
-import { FaPlus, FaEdit, FaTrash, FaSearch, FaEye } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaSearch, FaEye, FaTimes } from 'react-icons/fa';
+import Card from '../../Product/Card';
 
 const ProductManagement = () => {
   const [products, setProducts] = useState([]);
@@ -18,6 +19,8 @@ const ProductManagement = () => {
     quantity: '',
     image: ''
   });
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [viewProduct, setViewProduct] = useState(null);
 
   useEffect(() => {
     fetchProducts();
@@ -100,9 +103,8 @@ const ProductManagement = () => {
   };
 
   const handleView = (product) => {
-    setSelectedProduct(product);
-    // You can implement a modal or detailed view here
-    toast.info(`Viewing details for ${product.title}`);
+    setViewProduct(product);
+    setViewModalOpen(true);
   };
 
   const filteredProducts = products.filter(product => {
@@ -320,6 +322,22 @@ const ProductManagement = () => {
           ))
         )}
       </div>
+
+      {/* Product View Modal */}
+      {viewModalOpen && viewProduct && (
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.4)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="modal-content" style={{ background: '#fff', borderRadius: '10px', padding: '2rem', minWidth: '320px', maxWidth: '90vw', position: 'relative', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
+            <button onClick={() => setViewModalOpen(false)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}><FaTimes /></button>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+              <img src={viewProduct.image} alt={viewProduct.title} style={{ maxWidth: '250px', maxHeight: '250px', objectFit: 'contain', borderRadius: '8px', marginBottom: '1rem' }} />
+              <h2 style={{ margin: 0 }}>{viewProduct.title}</h2>
+              <p style={{ color: '#666', margin: 0 }}>{viewProduct.description}</p>
+              <p style={{ margin: 0 }}><strong>Available Stock:</strong> {viewProduct.quantity}</p>
+              <p style={{ margin: 0 }}><strong>Sold Stock:</strong> {typeof viewProduct.sold === 'number' ? viewProduct.sold : 'N/A'}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

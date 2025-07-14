@@ -3,6 +3,7 @@ const vendorDb=require('../Models/vendorModel');
 const userDb=require('../Models/userModel');
 const productDb=require('../Models/productModel');
 const orderDb=require('../Models/orderModel');
+const Notification = require('../Models/notificationModel');
 const { hashPassword } = require('../Utilities/passwordUtilities');
 const { createToken } = require('../Utilities/generateToken');
 const { comparePassword } = require('../Utilities/passwordUtilities');
@@ -422,6 +423,64 @@ const getVendorProductsForAdmin = async (req, res) => {
     }
 };
 
+// Get notifications for the logged-in admin
+const getAdminNotifications = async (req, res) => {
+    try {
+        const adminId = req.admin; // Set by authAdmin middleware
+        const { page = 1, limit = 10, unreadOnly = false } = req.query;
+        const query = { adminId };
+        if (unreadOnly === 'true') query.isRead = false;
+        const notifications = await Notification.find(query)
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(parseInt(limit));
+        const total = await Notification.countDocuments(query);
+        res.status(200).json({ notifications, total });
+    } catch (error) {
+        console.error('Error fetching admin notifications:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// Get total sales for admin dashboard
+const getAdminTotalSales = async (req, res) => {
+    try {
+        const totalSalesResult = await orderDb.aggregate([
+            { $match: { orderStatus: { $in: ['Delivered', 'Shipped'] } } },
+            { $group: { _id: null, totalSales: { $sum: '$totalAmount' } } }
+        ]);
+        const totalSales = totalSalesResult.length > 0 ? totalSalesResult[0].totalSales : 0;
+        res.status(200).json({ totalSales });
+    } catch (error) {
+        console.error('Error fetching admin total sales:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// Update order status (Admin)
+const updateOrderStatus = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const { orderStatus } = req.body;
+        const validStatuses = ['Pending', 'Shipped', 'Delivered', 'Cancelled'];
+        if (!validStatuses.includes(orderStatus)) {
+            return res.status(400).json({ error: 'Invalid order status' });
+        }
+        const order = await orderDb.findByIdAndUpdate(
+            orderId,
+            { orderStatus },
+            { new: true }
+        );
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+        res.status(200).json({ message: 'Order status updated', order });
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 module.exports={
     register,
     login,
@@ -439,5 +498,8 @@ module.exports={
     updateProduct,
     deleteProduct,
     getVendorDetails,
-    getVendorProductsForAdmin
+    getVendorProductsForAdmin,
+    getAdminNotifications,
+    getAdminTotalSales,
+    updateOrderStatus
 }

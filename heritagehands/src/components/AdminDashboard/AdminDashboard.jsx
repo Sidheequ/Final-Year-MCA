@@ -50,12 +50,12 @@ const AdminDashboard = () => {
       await adminLogout();
       dispatch(removeAdmin());
       toast.success('Logged out successfully');
-      navigate('/admin/login');
+      navigate('/');
     } catch (error) {
       console.error('Logout error:', error);
       // Even if logout fails, clear local state
       dispatch(removeAdmin());
-      navigate('/admin/login');
+      navigate('/');
     }
   };
 
